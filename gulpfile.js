@@ -16,8 +16,8 @@ const PATH = {
 gulp.task('literature', () => {
     return watch(PATH.src, () => {
 		gulp.src(PATH.src)
-	        .pipe(literate())
-			.pipe(gulp.dest(PATH.build))
+	        .pipe(literate());
+			//.pipe(gulp.dest(PATH.build))
 	});
 });
 
