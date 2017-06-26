@@ -43,4 +43,4 @@ gulp.task('wpDevServer', () => {
 });
 
 gulp.task('serve', ['literature', 'wpDevServer']);
-gulp.task('build', ['literature', 'webpack'])
+gulp.task('build', ['literature', 'webpack']);
