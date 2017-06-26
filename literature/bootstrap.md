@@ -74,10 +74,63 @@ Now that we got our html loaded, we can go ahead and define the routes
 		},
 		"/navigation/:id": {
 			controller: "NavigationPageCtrl",
-			template: NavigationPageCtrl
+			template: NavigationPageCtrl,
 		}
 	};
 
 	export default routes;
+
+```
+
+## Main AngularJS Module
+
+Now let's have look at the Module initilization
+
+First, let's import all the stuff we include and need in our Module
+
+```JavaScript
+
+	import angular from "angular";
+	import router from "angular-route";
+	import animate from "angular-animate";
+	import loadingBar from "angular-loading-bar";
+	import { Module } from "ng-harmony-module";
+
+	//TODO import bootstrap components here!
+```
+
+Now let's initialize the Module with its dependencies :) Easy :)
+
+```JavaScript
+
+	let deps = [
+		'ngRoute',
+		'ngAnimate',
+		'angular-loading-bar'
+	];
+	var module = new Module('webtrekk', deps);
+
+	export default module;
+
+```
+
+## Main Entry Point
+
+Now that everything is prepared we can go ahead and kickoff/bootstrap!
+
+```JavaScript
+
+	import "/assets/styles/main.sass";
+
+	import module from "./module";
+	import routes from "./routes";
+
+	module.routing(routes);
+	module.config(($locationProvider) => {
+		$locationProvider.html5Mode(false);
+	});
+	module.bootstrap();
+
+	export default module.name;
 
 ```
