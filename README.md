@@ -32,14 +32,14 @@ Create a Single Page Application to edit user data based on local storage (no ba
 * "Delete" deletes the customer (without asking)
 * "Navi" goes to the "Navigation Data" view
 
-![customer overview](/docs/overview.png)
+![customer overview](/assets/docs/overview.png)
 
 ### Customer Details View
 
 * Customer ID is not editable
 * "Save" saves the data, "Cancel" does not save anything, both go back to the Overview
 
-![customer details](/docs/details.png)
+![customer details](/assets/docs/details.png)
 
 ### Navigation Data View
 
@@ -47,7 +47,7 @@ Create a Single Page Application to edit user data based on local storage (no ba
 * Initially sort by "Timestamp", ascending
 * Optionally show the sort direction in the table heading
 
-![navigation data](/docs/navigation.png)
+![navigation data](/assets/docs/navigation.png)
 
 ### Appendix
 
