@@ -27,41 +27,24 @@ We'll come across this features in the nick of time ...
 _Let's kick this off as a story told reasonably and not necessarily in the sense of file structure_ :)
 
 ### Let's consider our routes ...
+
 * Where will angularjs take you to once the app starts?
 * What's the navigational structure after allow
 
 Given the (specs)[/README.md] we can conclude we got 3 views:
 * The landing page is the _customer overview_
-
-![customer overview](/assets/docs/overview.png)
-
 * One can navigate to the _details_, which is a separate page
-
-![customer details](/assets/docs/details.png)
-
 * As to not leave the _details_ such a lonely Asset, there comes the _navigation data_ to the rescue
-
- ![navigation data](/assets/docs/navigation.png)
-
-Now those pages don't only need a config, they also need templates, so let's import those _pug_-templates (Pug is the successor of jade, a templating engine which is to HTML just what _Sass_ is to _CSS_)
-
-## Import templates 4 Routing
-
-```JavaScript
-
-	import OverviewPageTpl from "/build/views/overview.pug";
-	import DetailsPageTpl from "/build/views/details.pug";
-	import NavigationPageTpl from "/build/views/navigation.pug";
-
-```
-
-Now that we got our html loaded, we can go ahead and define the routes
 
 ## Routing
 
-	\_"Import-templates-4-Routing"
+Now those pages don't only need a config, they also need templates, so let's import those _pug_-templates (Pug is the successor of jade, a templating engine which is to HTML just what _Sass_ is to _CSS_)
+Then, let's declare the routes
 
-```JavaScript
+```js
+	import OverviewPageTpl from "/build/views/overview.pug";
+	import DetailsPageTpl from "/build/views/details.pug";
+	import NavigationPageTpl from "/build/views/navigation.pug";
 
 	const routes = {
 		default: {
@@ -70,38 +53,31 @@ Now that we got our html loaded, we can go ahead and define the routes
 		},
 		"/detail/:id": {
 			controller: "DetailsPageCtrl",
-			template: DetailsPageCtrl,
+			template: DetailsPageTpl,
 		},
 		"/navigation/:id": {
 			controller: "NavigationPageCtrl",
-			template: NavigationPageCtrl,
+			template: NavigationPageTpl,
 		}
 	};
 
 	export default routes;
-
 ```
 
 ## Main AngularJS Module
 
 Now let's have look at the Module initilization
-
 First, let's import all the stuff we include and need in our Module
+Then let's initialize the Module with its dependencies :) Easy :)
 
-```JavaScript
-
-	import angular from "angular";
-	import router from "angular-route";
-	import animate from "angular-animate";
-	import loadingBar from "angular-loading-bar";
+```js
+	import "angular";
+	import "angular-route";
+	import "angular-animate";
+	import "angular-loading-bar";
 	import { Module } from "ng-harmony-module";
 
 	//TODO import bootstrap components here!
-```
-
-Now let's initialize the Module with its dependencies :) Easy :)
-
-```JavaScript
 
 	let deps = [
 		'ngRoute',
@@ -111,15 +87,13 @@ Now let's initialize the Module with its dependencies :) Easy :)
 	var module = new Module('webtrekk', deps);
 
 	export default module;
-
 ```
 
 ## Main Entry Point
 
 Now that everything is prepared we can go ahead and kickoff/bootstrap!
 
-```JavaScript
-
+```js
 	import "/assets/styles/main.sass";
 
 	import module from "./module";
@@ -132,5 +106,4 @@ Now that everything is prepared we can go ahead and kickoff/bootstrap!
 	module.bootstrap();
 
 	export default module.name;
-
 ```

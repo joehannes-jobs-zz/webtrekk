@@ -1,6 +1,6 @@
 {
   "name": "webtrekk",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "An AngularJS / Bootstrap / Jasmine / LocalStorage Demo",
   "scripts": {
     "serve": "node_modules/.bin/rimraf build && gulp serve",
@@ -29,6 +29,7 @@
   "devDependencies": {
     "angular-mocks": "^1.6.4",
     "babel-core": "^6.24.1",
+    "babel-eslint": "^7.2.3",
     "babel-loader": "^7.0.0",
     "babel-plugin-syntax-class-properties": "^6.13.0",
     "babel-plugin-transform-async-functions": "^6.22.0",
