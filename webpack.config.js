@@ -12,11 +12,12 @@ let config = {
     output: {
         filename: isProd
             ? "[name].[hash].js"
-            : "[name].bundle.js",
+            : "bundle.js",
         path: isProd ? path.resolve(__dirname, "dist") : path.resolve(__dirname, "build"),
+		publicPath: '/assets/',
 		chunkFilename: isProd
             ? "[name].[hash].js"
-            : "[name].bundle.js"
+            : "bundle.js"
     },
     devtool: isProd
         ? "source-map"
@@ -24,7 +25,7 @@ let config = {
             ? "inline-source-map"
             : "eval-source-map"),
     devServer: {
-        contentBase: "./build",
+        contentBase: "./",
         stats: "minimal"
     },
     module: {
@@ -50,7 +51,7 @@ let config = {
 						formatter: require("eslint/lib/formatters/stylish"),
 						failOnWarning: false,
 						emitError: true,
-						failOnError: true
+						failOnError: false
 					}
 				}]
             }, {
@@ -134,13 +135,11 @@ if (isTest) {
     });
 }
 
-config.plugins = [];
-
-
 if (isProd) {
+	config.plugins = [];
     config.plugins.push(new webpack.NoErrorsPlugin(), new webpack.optimize.UglifyJsPlugin(), new CopyWebpackPlugin([
         {
-            from: __dirname + "/dist"
+            from: __dirname + "/build"
         }
     ]))
 }
