@@ -1,38 +1,36 @@
 const gulp = require('gulp');
+const tap = require('gulp-tap');
 const webpack = require('gulp-webpack');
+const compiler = require('webpack-stream');
 const WebpackDevServer = require('webpack-dev-server');
 const wpConfig = require('./webpack.config.js');
-const literate = require('gulp-literate');
 const watch = require('gulp-watch');
 const gutil = require('gulp-util');
+const grun = require('gulp-run');
+const fs = require('fs');
+const path = require('path');
+const runSeq = require('run-sequence');
 
 const PATH = {
-	src: 'literature/**/*.md',
-	entry: dest + '/app/app.js',
+	src: 'literature/*.md',
+	entry: 'build/app/app.js',
 	assets: 'assets',
 	dest: 'build'
 }
 
-gulp.task('literature', () => {
-    return watch(PATH.src, () => {
-		gulp.src(PATH.src)
-	        .pipe(literate());
-			//.pipe(gulp.dest(PATH.build))
+gulp.task('watchLiterature', () => {
+    return watch(PATH.src, { ignoreInitial: true }, (vinyl) => {
+		return grun('node_modules/.bin/litpro ./literature/' + vinyl.relative).exec();
 	});
 });
 
-gulp.task('webpack', () => {
-	return watch(PATH.entry)
-		.pipe(webpack(wpConfig));
-});
-
-gulp.task('wpDevServer', () => {
+gulp.task('server', () => {
 	var myConfig = Object.create(wpConfig);
 	myConfig.devtool = "eval";
 	myConfig.debug = true;
 	// Start a webpack-dev-server
-	new WebpackDevServer(webpack(myConfig), {
-		publicPath: "/" + myConfig.output.publicPath,
+	new WebpackDevServer(compiler(myConfig), {
+		publicPath: myConfig.output.path,
 		stats: {
 			colors: true
 		}
@@ -42,5 +40,26 @@ gulp.task('wpDevServer', () => {
 	});
 });
 
-gulp.task('serve', ['literature', 'wpDevServer']);
-gulp.task('build', ['literature', 'webpack']);
+gulp.task('compile', (done) => {
+	const folder = "./literature";
+	var files = fs.readdirSync(folder)
+		.filter((file) => fs.lstatSync(path.join(folder, file)).isFile()).length;
+	var compiled = 0;
+	gulp.src(PATH.src)
+		.pipe(tap((vinyl) => {
+			grun('node_modules/.bin/litpro ./literature/' + vinyl.relative)
+				.exec(() => {
+					if (++compiled === files.length)
+						done();
+				});
+		}));
+});
+
+gulp.task('build', ['compile'], () => {
+	return gulp.src(PATH.entry)
+		.pipe(webpack(wpConfig));
+});
+
+gulp.task('serve', () => {
+	runSeq(['watchLiterature', 'server']);
+});

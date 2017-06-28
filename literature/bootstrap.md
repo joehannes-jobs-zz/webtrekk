@@ -3,9 +3,9 @@
 What I call the bootstrapping chapter of this little piece of art,
 consists of 3 distinct parts
 
-* [/build/app/app.js](#Main-Entry-Point "save:")
-* [/build/app/module.js](#Main-AngularJS-Module "save:")
-* [/build/app/routes.js](#Routing "save:")
+* [app/app.js](#Main-Entry-Point "save:")
+* [app/module.js](#Main-AngularJS-Module "save:")
+* [app/routes.js](#Routing "save:")
 
 While the main entry point configures the Module
 and triggers AngularJS bootstrapping

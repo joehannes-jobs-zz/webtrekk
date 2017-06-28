@@ -1,14 +1,11 @@
 var path = require("path");
 
 var webpack = require("webpack");
-var autoprefixer = require("autoprefixer");
-var HtmlWebpackPlugin = require("html-webpack-plugin");
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 
 var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === "test" || ENV === "test-watch";
-var isProd = ENV === "dist";
+var isProd = ENV === "build";
 
 let config = {
     entry: isTest ? void 0 : ["babel-polyfill", "./build/app/app.js"],
@@ -16,8 +13,8 @@ let config = {
         filename: isProd
             ? "[name].[hash].js"
             : "[name].bundle.js",
-        path: path.resolve(__dirname, "dist"),
-        chunkFilename: isProd
+        path: isProd ? path.resolve(__dirname, "dist") : path.resolve(__dirname, "build"),
+		chunkFilename: isProd
             ? "[name].[hash].js"
             : "[name].bundle.js"
     },
@@ -27,7 +24,7 @@ let config = {
             ? "inline-source-map"
             : "eval-source-map"),
     devServer: {
-        contentBase: "./dist",
+        contentBase: "./build",
         stats: "minimal"
     },
     module: {
@@ -49,8 +46,8 @@ let config = {
                     }
                 }, {
 					loader: "eslint-loader",
-        			options: {
-          				formatter: require("eslint/lib/formatters/stylish"),
+					options: {
+						formatter: require("eslint/lib/formatters/stylish"),
 						failOnWarning: false,
 						emitError: true,
 						failOnError: true
@@ -67,12 +64,12 @@ let config = {
                     }
                 ]
             }, {
-		      include: /\.pug/,
-		      loader: ['raw-loader', 'pug-html-loader'],
-		      options: {
-		        data: {}
-		      }
-		  	}, {
+				include: /\.pug/,
+				loader: ['raw-loader', 'pug-html-loader'],
+				options: {
+					data: {}
+				}
+			}, {
                 test: /\.(sass|scss)$/,
                 use: [
                     {
@@ -82,7 +79,7 @@ let config = {
                     }, {
                         loader: "sass-loader", // compiles Sass to CSS
                         options: {
-                            includePaths: ["/node_modules/inuitcss"]
+                            includePaths: []
                         }
                     }
                 ]
@@ -139,16 +136,9 @@ if (isTest) {
 
 config.plugins = [];
 
-if (!isTest) {
-    config.plugins.push(new HtmlWebpackPlugin({ template: "./client/index.html", inject: "body" }), new ExtractTextPlugin({
-        "filename": "css/[name].css",
-        disable: !isProd,
-        allChunks: true
-    }));
-}
 
 if (isProd) {
-    config.plugins.push(new webpack.NoErrorsPlugin(), new webpack.optimize.DedupePlugin(), new webpack.optimize.UglifyJsPlugin(), new CopyWebpackPlugin([
+    config.plugins.push(new webpack.NoErrorsPlugin(), new webpack.optimize.UglifyJsPlugin(), new CopyWebpackPlugin([
         {
             from: __dirname + "/dist"
         }

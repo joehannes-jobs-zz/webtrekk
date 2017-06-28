@@ -15,9 +15,9 @@ Let's kick off with the _Landing Page_, which is the customer overview.
 # Landing Page aka Customer Overview
 
 It consists of
-* [/build/views/overview.pug](#Overview-View "save:")
-* [/build/app/pages/overview.sass](#Overview-PageStyles "save:")
-* [/build/app/pagees/overview.js](#Overview-PageCtrl "save:")
+* [views/overview.pug](#Overview-View "save:")
+* [app/pages/overview.sass](#Overview-PageStyles "save:")
+* [app/pages/overview.js](#Overview-PageCtrl "save:")
 
 ## Overview View
 
@@ -60,9 +60,9 @@ export class OverviewPageCtrl extends Ctrl {};
 # Time to add some detail
 
 It consists of
-* [/build/views/details.pug](#Details-View "save:")
-* [/build/app/pages/details.sass](#Details-PageStyles "save:")
-* [/build/app/pagees/details.js](#Details-PageCtrl "save:")
+* [views/details.pug](#Details-View "save:")
+* [app/pages/details.sass](#Details-PageStyles "save:")
+* [app/pages/details.js](#Details-PageCtrl "save:")
 
 ## Details View
 
@@ -108,9 +108,9 @@ export class DetailsPageCtrl extends Ctrl {};
 # A Details Companion - Navigation Data
 
 It consists of
-* [/build/views/navigation.pug](#Navigation-View "save:")
-* [/build/app/pages/navigation.sass](#Navigation-PageStyles "save:")
-* [/build/app/pagees/navigation.js](#Navigation-PageCtrl "save:")
+* [/views/navigation.pug](#Navigation-View "save:")
+* [app/pages/navigation.sass](#Navigation-PageStyles "save:")
+* [app/pages/navigation.js](#Navigation-PageCtrl "save:")
 
 ## Navigation View
 
@@ -133,7 +133,7 @@ Here again the reference image:
 
 ```sass
 	h1#navigation-header
-		font-color: green
+		font-color: pink
 ```
 
 ## Navigation PageCtrl
