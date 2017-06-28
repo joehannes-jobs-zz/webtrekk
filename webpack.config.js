@@ -3,10 +3,12 @@ var path = require("path");
 var webpack = require("webpack");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === "test" || ENV === "test-watch";
 var isProd = ENV === "build";
+var isDev = ENV === "serve";
 
 const extractSass = new ExtractTextPlugin({
     filename: "[name].[contenthash].css"
@@ -17,12 +19,12 @@ let config = {
     output: {
         filename: isProd
             ? "[name].[hash].js"
-            : "bundle.js",
+            : "[name].bundle.js",
         path: isProd ? path.resolve(__dirname, "dist") : path.resolve(__dirname, "build"),
 		publicPath: '/assets/',
 		chunkFilename: isProd
             ? "[name].[hash].js"
-            : "bundle.js"
+            : "[name].bundle.js"
     },
     devtool: isProd
         ? "source-map"
@@ -146,6 +148,21 @@ if (isTest) {
             esModules: true
         }
     });
+}
+if (isDev) {
+	config.plugins = [new HtmlWebpackPlugin({
+		title: 'Webtrekk Demo Joehannes',
+		inject: false,
+		template: '!!pug-loader!assets/index.pug',
+		files: {
+			js: ["main.bundle.js"],
+			chunks: {
+				main: {
+					entry: "build/app/app.js",
+				}
+			}
+		}
+	})];
 }
 
 if (isProd) {

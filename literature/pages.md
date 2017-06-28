@@ -28,8 +28,8 @@ Here again the reference image:
 Pretty Simple :)
 
 ```pug
-h1#overview-header: Customer Overview
-button(button): Add New Customer
+h1#overview-header Customer Overview
+button(button) Add New Customer
 table
 ```
 
@@ -75,10 +75,10 @@ Pretty Simple :)
 ```pug
 h1#details-header Customer Details
 form
-	label: Field
+	label Field
 	input
-	button(button): Save
-	button(button): Cancel
+	button.button Save
+	button.button Cancel
 ```
 
 ## Details PageStyles
@@ -122,11 +122,11 @@ Here again the reference image:
 h1#navigation-header Navigation Data for {user.name}
 table
 	tr
-		th: Page
-		th: Timestamp
+		th Page
+		th Timestamp
 	tr
-		td: X
-		td: 2013-07-07
+		td X
+		td 2013-07-07
 ```
 
 ## Navigation PageStyles

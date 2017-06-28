@@ -16,7 +16,8 @@ const PATH = {
 	src: 'literature/*.md',
 	entry: 'build/app/app.js',
 	assets: 'assets',
-	dest: 'build'
+	dest: 'build',
+	deploy: 'dist'
 }
 
 gulp.task('watchLiterature', () => {
@@ -49,7 +50,8 @@ gulp.task('compile', (done) => {
 });
 gulp.task('webpack', () => {
 	return gulp.src(PATH.entry)
-		.pipe(gWebpack(wpConfig, webpack));
+		.pipe(gWebpack(wpConfig, webpack))
+		.pipe(gulp.dest(PATH.deploy));
 });
 gulp.task('build', (cb) => {
 	runSeq('compile', 'webpack', cb);
