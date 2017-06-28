@@ -67,9 +67,6 @@ let config = {
             }, {
 				include: /\.pug/,
 				loader: ['raw-loader', 'pug-html-loader'],
-				options: {
-					data: {}
-				}
 			}, {
                 test: /\.(sass|scss)$/,
                 use: [

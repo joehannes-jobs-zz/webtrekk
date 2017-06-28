@@ -49,26 +49,26 @@ which is to HTML just what _Sass_ is to _CSS_)
 Then, let's declare the routes!
 
 ```js
-	import OverviewPageTpl from "/build/views/overview.pug";
-	import DetailsPageTpl from "/build/views/details.pug";
-	import NavigationPageTpl from "/build/views/navigation.pug";
+import OverviewPageTpl from "../views/overview.pug";
+import DetailsPageTpl from "../views/details.pug";
+import NavigationPageTpl from "../views/navigation.pug";
 
-	const routes = {
-		default: {
-			controller: "OverviewPageCtrl",
-			template: OverviewPageTpl,
-		},
-		"/detail/:id": {
-			controller: "DetailsPageCtrl",
-			template: DetailsPageTpl,
-		},
-		"/navigation/:id": {
-			controller: "NavigationPageCtrl",
-			template: NavigationPageTpl,
-		}
-	};
+const routes = {
+	default: {
+		controller: "OverviewPageCtrl",
+		template: OverviewPageTpl,
+	},
+	"/detail/:id": {
+		controller: "DetailsPageCtrl",
+		template: DetailsPageTpl,
+	},
+	"/navigation/:id": {
+		controller: "NavigationPageCtrl",
+		template: NavigationPageTpl,
+	}
+};
 
-	export default routes;
+export default routes;
 ```
 
 ## Main AngularJS Module
@@ -78,20 +78,20 @@ First, let's import all the stuff we include and need in our Module
 Then let's initialize the Module with its dependencies :) Easy :)
 
 ```js
-	import "angular";
-	import "angular-route";
-	import "angular-animate";
-	import { Module } from "ng-harmony-module";
+import "angular";
+import "angular-route";
+import "angular-animate";
+import { Module } from "ng-harmony-module";
 
-	//TODO import bootstrap components here!
+//TODO import bootstrap components here!
 
-	let deps = [
-		'ngRoute',
-		'ngAnimate',
-	];
-	var module = new Module('webtrekk', deps);
+let deps = [
+	'ngRoute',
+	'ngAnimate',
+];
+var module = new Module('webtrekk', deps);
 
-	export default module;
+export default module;
 ```
 
 ## Main Entry Point
@@ -99,16 +99,25 @@ Then let's initialize the Module with its dependencies :) Easy :)
 Now that everything is prepared we can go ahead and kickoff/bootstrap!
 
 ```js
-	import "/assets/styles/main.sass";
+import "../../assets/styles/main.sass";
 
-	import module from "./module";
-	import routes from "./routes";
+import module from "./module";
+import routes from "./routes";
 
-	module.routing(routes);
-	module.config(($locationProvider) => {
-		$locationProvider.html5Mode(false);
-	});
-	module.bootstrap();
+import "./pages/overview"
+import "./pages/overview.sass"
 
-	export default module.name;
+import "./pages/details"
+import "./pages/details.sass"
+
+import "./pages/navigation"
+import "./pages/navigation.sass"
+
+module.routing(routes);
+module.config(($locationProvider) => {
+	$locationProvider.html5Mode(false);
+});
+module.bootstrap();
+
+export default module.name;
 ```

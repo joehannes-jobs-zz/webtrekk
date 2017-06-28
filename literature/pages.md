@@ -28,16 +28,16 @@ Here again the reference image:
 Pretty Simple :)
 
 ```pug
-	h1#overview-header: Customer Overview
-	button(button): Add New Customer
-	table
+h1#overview-header: Customer Overview
+button(button): Add New Customer
+table
 ```
 
 ## Overview PageStyles
 
 ```sass
-	h1#overview-header
-		font-color: red
+h1#overview-header
+	color: red
 ```
 
 ## Overview PageCtrl
@@ -73,19 +73,19 @@ Here again the reference image:
 Pretty Simple :)
 
 ```pug
-	h1#details-header Customer Details
-	form
-		label: Field
-		input: Value
-		button(button): Save
-		button(button): Cancel
+h1#details-header Customer Details
+form
+	label: Field
+	input
+	button(button): Save
+	button(button): Cancel
 ```
 
 ## Details PageStyles
 
 ```sass
-	h1#details-header
-		font-color: blue
+h1#details-header
+	color: blue
 ```
 
 ## Details PageCtrl
@@ -119,21 +119,21 @@ Here again the reference image:
 ![customer overview](/assets/docs/navigation.png)
 
 ```pug
-	h1#navigation-header Navigation Data for {user.name}
-	table
-		tr
-			th: Page
-			th: Timestamp
-		tr
-			td: X
-			td: 2013-07-07
+h1#navigation-header Navigation Data for {user.name}
+table
+	tr
+		th: Page
+		th: Timestamp
+	tr
+		td: X
+		td: 2013-07-07
 ```
 
 ## Navigation PageStyles
 
 ```sass
-	h1#navigation-header
-		font-color: pink
+h1#navigation-header
+	color: green
 ```
 
 ## Navigation PageCtrl

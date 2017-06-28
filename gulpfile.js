@@ -1,15 +1,16 @@
-const gulp = require('gulp');
-const tap = require('gulp-tap');
-const webpack = require('gulp-webpack');
-const compiler = require('webpack-stream');
-const WebpackDevServer = require('webpack-dev-server');
-const wpConfig = require('./webpack.config.js');
-const watch = require('gulp-watch');
-const gutil = require('gulp-util');
-const grun = require('gulp-run');
-const fs = require('fs');
-const path = require('path');
-const runSeq = require('run-sequence');
+var gulp = require('gulp');
+var tap = require('gulp-tap');
+var gWebpack = require('gulp-webpack');
+var webpack = require('webpack');
+//var compiler = require('webpack-stream');
+var WebpackDevServer = require('webpack-dev-server');
+var wpConfig = require('./webpack.config.js');
+var watch = require('gulp-watch');
+var gutil = require('gulp-util');
+var grun = require('gulp-run');
+var fs = require('fs');
+var path = require('path');
+var runSeq = require('run-sequence');
 
 const PATH = {
 	src: 'literature/*.md',
@@ -24,17 +25,9 @@ gulp.task('watchLiterature', () => {
 	});
 });
 
-gulp.task('server', () => {
-	var myConfig = Object.create(wpConfig);
-	myConfig.devtool = "eval";
-	myConfig.debug = true;
+gulp.task('server', (cb) => {
 	// Start a webpack-dev-server
-	new WebpackDevServer(compiler(myConfig), {
-		publicPath: myConfig.output.path,
-		stats: {
-			colors: true
-		}
-	}).listen(8080, "localhost", (err) => {
+	new WebpackDevServer(webpack(wpConfig), {}).listen(8080, "localhost", (err) => {
 		if (err) throw new gutil.PluginError("webpack-dev-server", err);
 		gutil.log("[webpack-dev-server]", "http://localhost:8080/webpack-dev-server/index.html");
 	});
@@ -57,7 +50,7 @@ gulp.task('compile', (done) => {
 
 gulp.task('build', ['compile'], () => {
 	return gulp.src(PATH.entry)
-		.pipe(webpack(wpConfig));
+		.pipe(gWebpack(wpConfig));
 });
 
 gulp.task('serve', () => {
