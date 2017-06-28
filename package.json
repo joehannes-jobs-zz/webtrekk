@@ -1,6 +1,6 @@
 {
   "name": "webtrekk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An AngularJS / Bootstrap / Jasmine / LocalStorage Demo",
   "scripts": {
     "serve": "node_modules/.bin/rimraf build && gulp compile && gulp serve",
