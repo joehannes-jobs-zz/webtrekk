@@ -21,7 +21,7 @@ let config = {
             ? "[name].[hash].js"
             : "[name].bundle.js",
         path: isProd ? path.resolve(__dirname, "dist") : path.resolve(__dirname, "build"),
-		publicPath: '/assets/',
+		publicPath: '/',
 		chunkFilename: isProd
             ? "[name].[hash].js"
             : "[name].bundle.js"
@@ -32,7 +32,7 @@ let config = {
             ? "inline-source-map"
             : "eval-source-map"),
     devServer: {
-        contentBase: "./",
+        contentBase: "build",
         stats: "minimal"
     },
     module: {
@@ -153,13 +153,18 @@ if (isDev) {
 	config.plugins = [new HtmlWebpackPlugin({
 		title: 'Webtrekk Demo Joehannes',
 		inject: false,
-		template: '!!pug-loader!assets/index.pug',
-		files: {
-			js: ["main.bundle.js"],
-			chunks: {
-				main: {
-					entry: "build/app/app.js",
-				}
+		template: '!!pug-loader!index.pug',
+		"files": {
+			"css": [ "main.css" ],
+			"js": ["main_bundle.js"],
+			"chunks": {
+				"head": {
+					"css": [ "main.css" ]
+				},
+				"main": {
+					"entry": "main_bundle.js",
+					"css": []
+				},
 			}
 		}
 	})];
