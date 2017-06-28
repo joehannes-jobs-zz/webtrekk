@@ -57,6 +57,11 @@ const routes = {
 	default: {
 		controller: "OverviewPageCtrl",
 		template: OverviewPageTpl,
+		resolve: {
+			observables: ["CustomerService", (CustomerService) => {
+				return CustomerService.initialized.promise;
+			}]
+		},
 	},
 	"/detail/:id": {
 		controller: "DetailsPageCtrl",

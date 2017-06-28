@@ -1,0 +1,17 @@
+{
+	"title": "navigation",
+	"version": 0,
+	"description": "describes a page navigation",
+	"type": "object",
+	"properties": {
+		"customer_id": {
+			"type": "number"
+		},
+		"pages": {
+			"type": "string"
+		},
+		"timestamp": {
+			"type": "string"
+		}
+	}
+}
