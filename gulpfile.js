@@ -47,10 +47,12 @@ gulp.task('compile', (done) => {
 				});
 		}));
 });
-
-gulp.task('build', ['compile'], () => {
+gulp.task('webpack', () => {
 	return gulp.src(PATH.entry)
-		.pipe(gWebpack(wpConfig));
+		.pipe(gWebpack(wpConfig, webpack));
+});
+gulp.task('build', (cb) => {
+	runSeq('compile', 'webpack', cb);
 });
 
 gulp.task('serve', () => {

@@ -52,9 +52,9 @@ import { Controller } from "ng-harmony-decorator";
 
 @Controller({
 	module: "webtrekk",
-	name: "OverviewPageCtrl"
+	name: "OverviewPageCtrl",
 })
-export class OverviewPageCtrl extends Ctrl {};
+export class OverviewPageCtrl extends Ctrl {}
 ```
 
 # Time to add some detail
@@ -100,9 +100,9 @@ import { Controller } from "ng-harmony-decorator";
 
 @Controller({
 	module: "webtrekk",
-	name: "DetailsPageCtrl"
+	name: "DetailsPageCtrl",
 })
-export class DetailsPageCtrl extends Ctrl {};
+export class DetailsPageCtrl extends Ctrl {}
 ```
 
 # A Details Companion - Navigation Data
@@ -148,7 +148,7 @@ import { Controller } from "ng-harmony-decorator";
 
 @Controller({
 	module: "webtrekk",
-	name: "NavigationPageCtrl"
+	name: "NavigationPageCtrl",
 })
-export class NavigationPageCtrl extends Ctrl {};
+export class NavigationPageCtrl extends Ctrl {}
 ```

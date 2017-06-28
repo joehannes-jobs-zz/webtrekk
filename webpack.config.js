@@ -2,10 +2,15 @@ var path = require("path");
 
 var webpack = require("webpack");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === "test" || ENV === "test-watch";
 var isProd = ENV === "build";
+
+const extractSass = new ExtractTextPlugin({
+    filename: "[name].[contenthash].css"
+});
 
 let config = {
     entry: isTest ? void 0 : ["babel-polyfill", "./build/app/app.js"],
@@ -68,8 +73,18 @@ let config = {
 				include: /\.pug/,
 				loader: ['raw-loader', 'pug-html-loader'],
 			}, {
-                test: /\.(sass|scss)$/,
-                use: [
+                test: /\.sass$/,
+                use: isProd ?
+					extractSass.extract({
+						use: [{
+							loader: "css-loader"
+						}, {
+							loader: "sass-loader",
+							options: {
+								includePaths: ["/assets/styles", "/styles"]
+							}
+						}]
+					}) : [
                     {
                         loader: "style-loader" // creates style nodes from JS strings
                     }, {
@@ -77,7 +92,8 @@ let config = {
                     }, {
                         loader: "sass-loader", // compiles Sass to CSS
                         options: {
-                            includePaths: []
+                            includePaths: ["/assets/styles", "/styles"],
+							sourceMap: true
                         }
                     }
                 ]
@@ -134,11 +150,14 @@ if (isTest) {
 
 if (isProd) {
 	config.plugins = [];
-    config.plugins.push(new webpack.NoErrorsPlugin(), new webpack.optimize.UglifyJsPlugin(), new CopyWebpackPlugin([
-        {
+    config.plugins.push(
+		new webpack.NoEmitOnErrorsPlugin(),
+		new webpack.optimize.UglifyJsPlugin(),
+		new CopyWebpackPlugin([{
             from: __dirname + "/build"
-        }
-    ]))
+        }]),
+		extractSass
+	);
 }
 
 module.exports = config;
