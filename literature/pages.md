@@ -84,10 +84,6 @@ export class OverviewPageCtrl extends Ctrl {
 				customer_lifetime_value: customer.customer_lifetime_value,
 			});
 		});
-		this.log({
-			level: "info",
-			msg: this.$scope.model
-		});
 		this._digest();
 	}
 

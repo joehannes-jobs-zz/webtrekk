@@ -40,11 +40,11 @@ table.table.table-striped
 			th {{tableHeaders.age.name}}
 			th {{tableHeaders.gender.name}}
 	tbody
-		tr(ng-repeat="(key, Row) in model track by Row.id | orderBy: tableHeaders.last_name.sorting === 'DEFAULT' ? 'id' : tableHeaders.last_name.sorting === 'ASC' ?	'lastName' : '-lastName' | orderBy: tableHeaders.last_name.sorting === 'DEFAULT' ? 'id' : tableHeaders.last_name.sorting === 'ASC' ? 'lastName' : '-lastName'" ng-class="{active: Row.active}")
-			td {{Row.first_name}}
-			td {{Row.last_name}}
-			td {{Row.age}}
-			td {{Row.gender}}
+		tr(ng-repeat="dataset in model | orderBy:orderByName" ng-class="{active: dataset.active}")
+			td {{dataset.first_name}}
+			td {{dataset.last_name}}
+			td {{dataset.age}}
+			td {{dataset.gender}}
 ```
 
 
@@ -59,6 +59,7 @@ import { Logging, Controller, Component, Evented } from "ng-harmony-decorator";
 import { EventedController } from "ng-harmony-controller";
 
 import CustomersTpl from "./customers.pug";
+import "./customers.sass";
 
 import Config from "../../../../assets/data/config.global.json";
 
@@ -87,10 +88,8 @@ export class CustomersCtrl extends EventedController {
 		super(...args);
 		this.$scope.$on("change", this.handleEvent.bind(this));
 
-		this.log({
-			level: 'warn',
-			message: this.$scope.model
-		});
+		this.$scope.orderByFirstName = 'id';
+		this.$scope.orderByLastName = 'last_name';
 		this._createTableHeaders();
 	}
 
@@ -146,7 +145,10 @@ export class CustomersCtrl extends EventedController {
 		type: "click",
 	})
 	sortByFirstName () {
+		this.sortBy("last_name", true)
 		this.sortBy("first_name");
+		this.$scope.orderByName = this.$scope.tableHeaders.first_name.ordering;
+		this._digest();
 	}
 
 	@Evented({
@@ -154,19 +156,27 @@ export class CustomersCtrl extends EventedController {
 		type: "click",
 	})
 	sortByLastName () {
+		this.sortBy("first_name", true)
 		this.sortBy("last_name");
+		this.$scope.orderByName = this.$scope.tableHeaders.last_name.ordering;
+		this._digest();
 	}
 
-	sortBy (attr) {
+	sortBy (attr, reset) {
 		let sortOrders = ["DEFAULT", "ASC", "DESC"],
+			orderBy = {
+				first_name: ['id', 'first_name', '-first_name'],
+				last_name: ['id', 'last_name', '-last_name']
+			},
 			order = 0;
-		sortOrders.forEach((sortOrder, i) => {
+		!reset && sortOrders.forEach((sortOrder, i) => {
 			if (sortOrder === this.$scope.tableHeaders[attr].sorting) {
 				order = i === 2 ? 0 : i + 1;
 				return false;
 			}
 		});
 		this.$scope.tableHeaders[attr].sorting = sortOrders[order];
+		this.$scope.tableHeaders[attr].ordering = orderBy[attr][order];
 	}
 }
 ```
@@ -174,5 +184,10 @@ export class CustomersCtrl extends EventedController {
 ## Customers Table Styles
 
 ```sass
-	table
-		box-shadow: 0px 10px 25px 5px rgba(150,150,150,0.5)
+table
+	box-shadow: 0px 10px 25px 5px rgba 150, 150, 150, 0.5
+
+table > thead > tr > th
+	&:nth-child(1), &:nth-child(2)
+		cursor: pointer
+```
