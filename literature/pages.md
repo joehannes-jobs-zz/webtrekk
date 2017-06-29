@@ -28,9 +28,23 @@ Here again the reference image:
 Pretty Simple :)
 
 ```pug
-h1#overview-header Customer Overview
-button(button) Add New Customer
-customers(model="{{model}}")
+header.page-header.row
+	.col-md-3 &nbsp;
+	.col-md-6: h1#overview-header Customer Overview
+	.col-md-3 &nbsp;
+.row
+	.col-md-3 &nbsp;
+	article.panel.panel-primary.col-md-6
+		.panel-heading
+			label.btn.btn-default Add New Customer
+			.pull-right
+				.btn-group(role="group")
+					label.btn.btn-default Edit
+					label.btn.btn-danger Delete
+				span.spacer-10 &nbsp;
+				label.btn.btn-default Navi
+		customers(model="{{model}}").panel-body
+	.col-md-3 &nbsp;
 ```
 
 ## Overview PageStyles
@@ -38,6 +52,10 @@ customers(model="{{model}}")
 ```sass
 h1#overview-header
 	color: red
+
+article.panel
+	padding-left: 0
+	padding-right: 0
 ```
 
 ## Overview PageCtrl

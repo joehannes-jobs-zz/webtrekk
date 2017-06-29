@@ -8,5 +8,5 @@ html(lang="en", data-framework="angularjs")
 		style [ng-cloak] { display: none; }
 		base(href="/")
 	body(ng-cloak, ng-app="webtrekk")
-		main(ng-view)
+		main(ng-view).container-fluid
 		script(src=`${htmlWebpackPlugin.files.chunks.main.entry}`)

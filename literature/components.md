@@ -184,10 +184,18 @@ export class CustomersCtrl extends EventedController {
 ## Customers Table Styles
 
 ```sass
-table
-	box-shadow: 0px 10px 25px 5px rgba 150, 150, 150, 0.5
-
 table > thead > tr > th
-	&:nth-child(1), &:nth-child(2)
+	&:nth-child(1):hover, &:nth-child(2):hover
 		cursor: pointer
+		background-color: rgba(50, 50, 200, .1)
+	&:first-child
+		padding-left: 15px
+	&:last-child
+		padding-right: 15px
+
+table > tbody > tr > td
+	&:first-child
+		padding-left: 15px
+	&:last-child
+		padding-right: 15px
 ```
