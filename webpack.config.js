@@ -73,7 +73,7 @@ let config = {
                 ]
             }, {
 				include: /\.pug/,
-				loader: ['raw-loader', 'pug-html-loader'],
+				loader: ['html-loader', 'pug-html-loader'],
 			}, {
                 test: /\.sass$/,
                 use: isProd ?

@@ -30,7 +30,7 @@ Pretty Simple :)
 ```pug
 h1#overview-header Customer Overview
 button(button) Add New Customer
-table
+customers(model="{{page.model}}")
 ```
 
 ## Overview PageStyles
@@ -53,8 +53,28 @@ import { Controller } from "ng-harmony-decorator";
 @Controller({
 	module: "webtrekk",
 	name: "OverviewPageCtrl",
+	controllerAs: "page",
+	deps: ["CustomerService"]
 })
-export class OverviewPageCtrl extends Ctrl {}
+export class OverviewPageCtrl extends Ctrl {
+	model = []
+	constructor (...args) {
+		super(...args);
+
+		//I think there's no use case for this as there's no real backend
+        //this.CustomerService.subscribeCustomer(this.onCustomerChange.bind(this));
+
+		this.initialize();
+	}
+
+	async initialize () {
+		let customers = await this.CustomerService.fetchCustomers();
+		customers && customers.forEach((customer) => {
+			this.model.push({ ...customer });
+		});
+		this._digest();
+	}
+}
 ```
 
 # Time to add some detail

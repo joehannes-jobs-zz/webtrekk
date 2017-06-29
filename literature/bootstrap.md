@@ -118,6 +118,8 @@ import "./pages/details.sass"
 import "./pages/navigation"
 import "./pages/navigation.sass"
 
+import "./services/customer.js"
+
 module.routing(routes);
 module.config(($locationProvider) => {
 	$locationProvider.html5Mode(false);

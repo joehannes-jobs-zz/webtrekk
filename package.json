@@ -1,6 +1,6 @@
 {
   "name": "webtrekk",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "description": "An AngularJS / Bootstrap / Jasmine / LocalStorage Demo",
   "scripts": {
     "serve": "node_modules/.bin/rimraf build && gulp compile && gulp serve",
@@ -104,7 +104,7 @@
     "ng-harmony-module": "^0.2.0",
     "ng-harmony-util": "^0.1.1",
     "pouchdb-adapter-idb": "^6.2.0",
-    "rxdb": "github:ng-harmony/rxdb",
+    "rxdb": "^5.0.0",
     "rxjs": "^5.4.0",
     "rxjs-es": "^5.0.0-beta.12"
   }
