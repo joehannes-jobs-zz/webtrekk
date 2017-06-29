@@ -58,7 +58,8 @@ export class CustomerService extends Srvc {
 			name: "customer",
 			schema: CustomerSchema
 		});
-		CustomerPayload.forEach((c) => {
+
+		CustomerPayload.data.forEach((c) => {
 			this.db.customer.upsert(c);
 		});
 
@@ -66,7 +67,7 @@ export class CustomerService extends Srvc {
 			name: "navigation",
 			schema: NavigationSchema
 		});
-		NavigationPayload.forEach((c) => {
+		NavigationPayload.data.forEach((c) => {
 			this.db.navigation.upsert(c);
 		});
 

@@ -5,7 +5,7 @@
 	"type": "object",
 	"properties": {
 		"customer_id": {
-			"type": "number",
+			"type": "string",
 			"primary": true
 		},
 		"first_name": {
