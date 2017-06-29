@@ -83,7 +83,7 @@ let config = {
 						}, {
 							loader: "sass-loader",
 							options: {
-								includePaths: ["/assets/styles", "/styles"]
+								includePaths: ["/assets/styles", "/styles", "/node_modules"]
 							}
 						}]
 					}) : [
@@ -94,7 +94,7 @@ let config = {
                     }, {
                         loader: "sass-loader", // compiles Sass to CSS
                         options: {
-                            includePaths: ["/assets/styles", "/styles"],
+                            includePaths: ["/assets/styles", "/styles", "/node_modules"],
 							sourceMap: true
                         }
                     }

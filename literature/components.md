@@ -150,7 +150,7 @@ export class CustomersCtrl extends EventedController {
 	}
 
 	@Evented({
-		selector: "table>thead>tr>th:nth-child(1)",
+		selector: "table>thead>tr>th:nth-child(2)",
 		type: "click",
 	})
 	sortByLastName () {
