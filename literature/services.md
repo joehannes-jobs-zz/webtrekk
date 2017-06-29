@@ -16,23 +16,24 @@ and in theory, allows to add a remote logger via configuration (like Rollbar).
 ```js
 import { Service as Srvc } from "ng-harmony-core";
 import { Service, Logging } from "ng-harmony-decorator";
-import { Log } from "ng-harmony-log";
+import "ng-harmony-log";
 
-import * as CustomerSchema from "../../assets/data/json/customer.schema.json";
-import * as NavigationSchema from "../../assets/data/json/navigation.schema.json";
+import * as CustomerSchema from "../../../assets/data/customer.schema.json";
+import * as NavigationSchema from "../../../assets/data/navigation.schema.json";
 
-import * as CustomerPayload from "../../assets/data/json/customer.payload.json";
-import * as NavigationPayload from "../../assets/data/json/navigation.payload.json";
+import * as CustomerPayload from "../../../assets/data/customer.payload.json";
+import * as NavigationPayload from "../../../assets/data/navigation.payload.json";
 
-import * as Rx from "rxjs";
+import Config from "../../../assets/data/config.global.json";
+
+//import "rxjs";
 import * as RxDB from "rxdb";
 import * as Adapter from "pouchdb-adapter-idb";
-
-import Config from "../../assets/data/json/config.global.json";
 
 @Service({
 	module: "webtrekk",
 	name: "CustomerService",
+	deps: ["$q"],
 })
 @Logging({
 	loggerName: "CustomerLogger",
@@ -57,7 +58,7 @@ export class CustomerService extends Srvc {
 			name: "customer",
 			schema: CustomerSchema
 		});
-		CustomerPayload.forEach((c, i, p) => {
+		CustomerPayload.forEach((c) => {
 			this.db.customer.upsert(c);
 		});
 
@@ -65,7 +66,7 @@ export class CustomerService extends Srvc {
 			name: "navigation",
 			schema: NavigationSchema
 		});
-		NavigationPayload.forEach((c, i, p) => {
+		NavigationPayload.forEach((c) => {
 			this.db.navigation.upsert(c);
 		});
 

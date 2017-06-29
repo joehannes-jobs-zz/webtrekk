@@ -128,7 +128,8 @@ let config = {
         ]
     },
     resolve: {
-        mainFields: ["browser", "module", "main"]
+        mainFields: ["browser", "module", "main"],
+		fallback: path.join(__dirname, "node_modules")
     },
     externals: {
         fs: "{}"
