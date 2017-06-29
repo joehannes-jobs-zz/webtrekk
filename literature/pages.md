@@ -51,11 +51,12 @@ header.page-header.row
 
 ```sass
 h1#overview-header
-	color: red
+	font-weight: bold
 
 article.panel
 	padding-left: 0
 	padding-right: 0
+	box-shadow: 0px 10px 25px 5px rgba(150, 150, 150, 0.5)
 ```
 
 ## Overview PageCtrl
