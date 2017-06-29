@@ -118,7 +118,9 @@ import "./pages/details.sass"
 import "./pages/navigation"
 import "./pages/navigation.sass"
 
-import "./services/customer.js"
+import "./services/customer"
+
+import "./components/customers/customers"
 
 module.routing(routes);
 module.config(($locationProvider) => {

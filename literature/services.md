@@ -49,7 +49,7 @@ export class CustomerService extends Srvc {
 	async _create () {
 		RxDB.plugin(Adapter);
 		this.db = await RxDB.create({
-			name: "webtrekkjoehannes",             // <- name
+			name: "webtrekk1",             // <- name
 			adapter: "idb",           // <- storage-adapter
 			multiInstance: false         // <- multiInstance (default: true)
 		});
@@ -68,7 +68,7 @@ export class CustomerService extends Srvc {
 			schema: NavigationSchema
 		});
 		NavigationPayload.data.forEach((c) => {
-			this.db.navigation.upsert(c);
+			this.db.navigation.insert(c);
 		});
 
 		this.initialized.resolve();

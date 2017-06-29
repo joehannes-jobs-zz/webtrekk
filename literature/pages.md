@@ -30,7 +30,7 @@ Pretty Simple :)
 ```pug
 h1#overview-header Customer Overview
 button(button) Add New Customer
-customers(model="{{page.model}}")
+customers(model="{{model}}")
 ```
 
 ## Overview PageStyles
@@ -48,31 +48,51 @@ Let's get the party started!
 import "./overview.sass";
 
 import { Controller as Ctrl } from "ng-harmony-core";
-import { Controller } from "ng-harmony-decorator";
+import { Controller, Logging } from "ng-harmony-decorator";
+
+import * as Config from "../../../assets/data/config.global.json";
 
 @Controller({
 	module: "webtrekk",
 	name: "OverviewPageCtrl",
-	controllerAs: "page",
 	deps: ["CustomerService"]
 })
+@Logging({
+	loggerName: "CustomersLogger",
+	...Config
+})
 export class OverviewPageCtrl extends Ctrl {
-	model = []
 	constructor (...args) {
 		super(...args);
 
 		//I think there's no use case for this as there's no real backend
         //this.CustomerService.subscribeCustomer(this.onCustomerChange.bind(this));
-
+		this.$scope.model = [];
 		this.initialize();
 	}
 
 	async initialize () {
 		let customers = await this.CustomerService.fetchCustomers();
 		customers && customers.forEach((customer) => {
-			this.model.push({ ...customer });
+			this.$scope.model.push({
+				id: customer.customer_id,
+				first_name: customer.first_name,
+				last_name: customer.last_name,
+				age: this.transformBirthday(customer.birthday),
+				gender: customer.gender,
+				last_contact: customer.last_contact,
+				customer_lifetime_value: customer.customer_lifetime_value,
+			});
+		});
+		this.log({
+			level: "info",
+			msg: this.$scope.model
 		});
 		this._digest();
+	}
+
+	transformBirthday (time) {
+		return Math.floor((new Date().getTime() - new Date(time).getTime()) / 1000 / 3600 / 24 / 365.25);
 	}
 }
 ```

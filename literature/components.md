@@ -29,34 +29,18 @@ what's going on, a better mental picture, so to speak.
 
 ```pug
 table.table.table-striped
-	thead: tr
-		th
-			span.glyphicon(aria-hidden="true" ng-class="{
-				ASC:'glyphicon-sort-by-alphabet',
-				DESC:'glyphicon-sort-by-alphabet-alt',
-				DEFAULT:'glyphicon-sort'
-			}[customers.tableHeaders.first_name.sorting]")
-			{{customers.tableHeaders.first_name.name}}
-		th
-			span.glyphicon(aria-hidden="true" ng-class="{
-				ASC:'glyphicon-sort-by-alphabet',
-				DESC:'glyphicon-sort-by-alphabet-alt',
-				DEFAULT:'glyphicon-sort'
-			}[customers.tableHeaders.last_name.sorting]")
-			{{customers.tableHeaders.last_name.name}}
-		th {{customers.tableHeaders.age.name}}
-		th {{customers.tableHeaders.gender.name}}
+	thead
+		tr
+			th
+				span.glyphicon(aria-hidden="true" ng-class="{ASC:'glyphicon-sort-by-alphabet', DESC:'glyphicon-sort-by-alphabet-alt', DEFAULT:'glyphicon-sort'}[tableHeaders.first_name.sorting]")
+				span {{tableHeaders.first_name.name}}
+			th
+				span.glyphicon(aria-hidden="true" ng-class="{ASC:'glyphicon-sort-by-alphabet', DESC:'glyphicon-sort-by-alphabet-alt', DEFAULT:'glyphicon-sort'}[tableHeaders.last_name.sorting]")
+				span {{tableHeaders.last_name.name}}
+			th {{tableHeaders.age.name}}
+			th {{tableHeaders.gender.name}}
 	tbody
-		tr(ng-repeat="(key, Row) in customers.model trackBy Row.id | orderBy: customers.tableHeaders.last_name.sorting === 'DEFAULT' ?
-			'id' :
-			customers.tableHeaders.last_name.sorting === 'ASC' ?
-				'lastName' :
-				'-lastName' | orderBy:
-		customers.tableHeaders.last_name.sorting === 'DEFAULT' ?
-			'id' :
-			customers.tableHeaders.last_name.sorting === 'ASC' ?
-				'lastName' :
-				'-lastName'" ng-class="{active: Row.active}")
+		tr(ng-repeat="(key, Row) in model track by Row.id | orderBy: tableHeaders.last_name.sorting === 'DEFAULT' ? 'id' : tableHeaders.last_name.sorting === 'ASC' ?	'lastName' : '-lastName' | orderBy: tableHeaders.last_name.sorting === 'DEFAULT' ? 'id' : tableHeaders.last_name.sorting === 'ASC' ? 'lastName' : '-lastName'" ng-class="{active: Row.active}")
 			td {{Row.first_name}}
 			td {{Row.last_name}}
 			td {{Row.age}}
@@ -76,7 +60,7 @@ import { EventedController } from "ng-harmony-controller";
 
 import CustomersTpl from "./customers.pug";
 
-import Config from "../../assets/data/config.global.json";
+import Config from "../../../../assets/data/config.global.json";
 
 
 @Component({
@@ -90,9 +74,8 @@ import Config from "../../assets/data/config.global.json";
 @Controller({
 	module: "webtrekk",
 	name: "CustomersCtrl",
-	controllerAs: "customers",
 	scope: {
-		model = ">"
+		model: "@"
 	}
 })
 @Logging({
@@ -104,6 +87,10 @@ export class CustomersCtrl extends EventedController {
 		super(...args);
 		this.$scope.$on("change", this.handleEvent.bind(this));
 
+		this.log({
+			level: 'warn',
+			message: this.$scope.model
+		});
 		this._createTableHeaders();
 	}
 
@@ -112,28 +99,28 @@ export class CustomersCtrl extends EventedController {
 			"first_name": {
 				name: "First Name",
 				sorting: "DEFAULT",
-			}
+			},
 			"last_name": {
 				name: "Last Name",
 				sorting: "ASC",
-			}
+			},
 			"age": {
 				name: "Age",
-			}
+			},
 			"gender": {
 				name: "Gender",
-			}
+			},
 		};
 	}
 
-	handleEvent (ev, { scope, triggerFn, triggerTokens }) {
+	handleEvent (ev, { scope, triggerTokens }) {
 		this.log({
 			level: "info",
 			msg: "handlingEventBehaviourPropagation",
 		});
 		if (scope._name.fn === "CustomersCtrl" &&
 			triggerTokens.type === "click" &&
-		 	triggerTokens.selector === "table>tbody") {
+			triggerTokens.selector === "table>tbody") {
 			//TODO this._emit this.$scope.n ... careful n is sort-sensitive
 			this.log({
 				level: "warn",
