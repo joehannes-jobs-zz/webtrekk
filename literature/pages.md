@@ -39,10 +39,10 @@ header.page-header.row
 			label.btn.btn-default(ng-click="$goToAddCustomer()") Add New Customer
 			.pull-right
 				.btn-group(role="group")
-					label.btn.btn-default(ng-disabled="selection") Edit
-					label.btn.btn-danger(ng-disabled="selection") Delete
+					label.btn.btn-default(ng-disabled="$selection()") Edit
+					label.btn.btn-danger(ng-disabled="$selection()") Delete
 				span.spacer-10 &nbsp;
-				label.btn.btn-default(ng-disabled="selection") Navi
+				label.btn.btn-default(ng-disabled="$selection()") Navi
 		customers(model="{{model}}").panel-body
 	.col-md-3 &nbsp;
 ```
@@ -77,18 +77,17 @@ import * as Config from "../../../assets/data/config.global.json";
 	deps: ["CustomerService", "$location"]
 })
 @Logging({
-	loggerName: "CustomersLogger",
+	loggerName: "OverviewPageLogger",
 	...Config
 })
 export class OverviewPageCtrl extends Ctrl {
 	constructor (...args) {
 		super(...args);
 
-		//I think there's no use case for this as there's no real backend
-        //this.CustomerService.subscribeCustomer(this.onCustomerChange.bind(this));
+		this.$scope.$on("change", this.handleEvent.bind(this));
+
 		this.$scope.model = [];
 		this.initialize();
-		this.$scope.selection = false;
 	}
 
 	async initialize () {
@@ -105,6 +104,15 @@ export class OverviewPageCtrl extends Ctrl {
 			});
 		});
 		this._digest();
+	}
+	$selection () {
+		return this.$scope.model.filter((ds) => ds.active ).length === 0;
+	}
+	handleEvent (ev, opts) {
+		this.log({
+			level: 'warn',
+			msg: opts
+		});
 	}
 
 	transformBirthday (time) {

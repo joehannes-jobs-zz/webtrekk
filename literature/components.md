@@ -110,17 +110,14 @@ export class CustomersCtrl extends EventedController {
 		};
 	}
 
-	handleEvent (ev, { el, triggerFn, scope }) {
+	handleEvent (ev, opts) {
 		this.log({
 			level: "info",
 			msg: "handlingEventBehaviourPropagation",
 		});
-		if (scope._name.fn === "CustomersCtrl" &&
-			triggerFn === "activate") {
-			this.log({
-				level: "warn",
-				msg: this.$scope.model,
-			});
+		if (opts.scope._name.fn === "CustomersCtrl" &&
+			opts.triggerFn === "activate") {
+			opts.data = this.$scope.model.filter((ds) => ds.active)[0];
 		}
 	}
 
@@ -195,11 +192,13 @@ table > thead > tr > th
 	&:last-child
 		padding-right: 15px
 
-table > tbody > tr > td
-	&:first-child
-		padding-left: 15px
-	&:last-child
-		padding-right: 15px
+table > tbody > tr
+	cursor: pointer
+	td
+		&:first-child
+			padding-left: 15px
+		&:last-child
+			padding-right: 15px
 ```
 
 ## Customer Form Template
