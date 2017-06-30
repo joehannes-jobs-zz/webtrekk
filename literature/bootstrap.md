@@ -71,7 +71,7 @@ const routes = {
 		controller: "DetailsPageCtrl",
 		template: DetailsPageTpl,
 		resolve: {
-			model: ["$route", "CustomerService", (CustomerService) => {
+			model: ["$route", "CustomerService", ($route, CustomerService) => {
 				return CustomerService.customerSearch($route.current.params.id)
 ;			}]
 		}

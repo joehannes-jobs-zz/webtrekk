@@ -4,19 +4,19 @@
 
 * [app/components/customers/customers.js](#Customers-Table "save:")
 * [app/components/customer_form/customer_form.js](#Customer-Form "save:")
-* [app/components/nav_data/nav_data.js](#Navigation-Data "save:")
+<!--* [app/components/nav_data/nav_data.js](#Navigation-Data "save:")-->
 *
 ### Each of those components will have a pug-template
 
 * [app/components/customers/customers.pug](#Customers-Table-Template "save:")
 * [app/components/customer_form/customer_form.pug](#Customer-Form-Template "save:")
-* [app/components/nav_data/nav_data.pug](#Navigation-Data-Template "save:")
-*
+<!--* [app/components/nav_data/nav_data.pug](#Navigation-Data-Template "save:")-->
+
 ### And we might want to add some styling on top of bootstrap, so let's be prepared
 
 * [app/components/customers/customers.sass](#Customers-Table-Styles "save:")
 * [app/components/customer_form/customer_form.sass](#Customer-Form-Styles "save:")
-* [app/components/nav_data/nav_data.sass](#Navigation-Data-Styles "save:")
+<!--* [app/components/nav_data/nav_data.sass](#Navigation-Data-Styles "save:")-->
 
 ## Customers Table Template
 

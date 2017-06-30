@@ -36,7 +36,7 @@ header.page-header.row
 	.col-md-3 &nbsp;
 	article.panel.panel-primary.col-md-6
 		.panel-heading
-			label.btn.btn-default Add New Customer
+			label.btn.btn-default(ng-click="$goToAddCustomer()") Add New Customer
 			.pull-right
 				.btn-group(role="group")
 					label.btn.btn-default(ng-disabled="selection") Edit
@@ -74,7 +74,7 @@ import * as Config from "../../../assets/data/config.global.json";
 @Controller({
 	module: "webtrekk",
 	name: "OverviewPageCtrl",
-	deps: ["CustomerService"]
+	deps: ["CustomerService", "$location"]
 })
 @Logging({
 	loggerName: "CustomersLogger",
@@ -109,6 +109,14 @@ export class OverviewPageCtrl extends Ctrl {
 
 	transformBirthday (time) {
 		return Math.floor((new Date().getTime() - new Date(time).getTime()) / 1000 / 3600 / 24 / 365.25);
+	}
+
+	$goToAddCustomer () {
+		this.log({
+			level: "info",
+			msg: "Goto Add Customer",
+		});
+		this.$location.url("/add");
 	}
 }
 ```
