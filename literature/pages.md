@@ -39,10 +39,10 @@ header.page-header.row
 			label.btn.btn-default Add New Customer
 			.pull-right
 				.btn-group(role="group")
-					label.btn.btn-default Edit
-					label.btn.btn-danger Delete
+					label.btn.btn-default(ng-disabled="selection") Edit
+					label.btn.btn-danger(ng-disabled="selection") Delete
 				span.spacer-10 &nbsp;
-				label.btn.btn-default Navi
+				label.btn.btn-default(ng-disabled="selection") Navi
 		customers(model="{{model}}").panel-body
 	.col-md-3 &nbsp;
 ```
@@ -88,6 +88,7 @@ export class OverviewPageCtrl extends Ctrl {
         //this.CustomerService.subscribeCustomer(this.onCustomerChange.bind(this));
 		this.$scope.model = [];
 		this.initialize();
+		this.$scope.selection = false;
 	}
 
 	async initialize () {
@@ -128,12 +129,14 @@ Here again the reference image:
 Pretty Simple :)
 
 ```pug
-h1#details-header Customer Details
-form
-	label Field
-	input
-	button.button Save
-	button.button Cancel
+header.page-header.row
+	.col-md-3 &nbsp;
+	.col-md-6: h1#overview-header {{heading}}
+	.col-md-3 &nbsp;
+.row
+	.col-md-3 &nbsp;
+	customerform.panel.panel-primary.col-md-6
+	.col-md-3 &nbsp;
 ```
 
 ## Details PageStyles

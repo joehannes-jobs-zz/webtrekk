@@ -63,9 +63,18 @@ const routes = {
 			}]
 		},
 	},
+	"/add": {
+		controller: "DetailsPageCtrl",
+		template: DetailsPageTpl,
+	},
 	"/detail/:id": {
 		controller: "DetailsPageCtrl",
 		template: DetailsPageTpl,
+		resolve: {
+			model: ["$route", "CustomerService", (CustomerService) => {
+				return CustomerService.customerSearch($route.current.params.id)
+;			}]
+		}
 	},
 	"/navigation/:id": {
 		controller: "NavigationPageCtrl",
