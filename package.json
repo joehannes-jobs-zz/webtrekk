@@ -97,7 +97,7 @@
     "angular-route": "^1.6.4",
     "angular-ui-bootstrap": "^2.5.0",
     "bootstrap-sass": "^3.3.7",
-    "ng-harmony-controller": "0.0.12",
+    "ng-harmony-controller": "^0.1.9",
     "ng-harmony-core": "^0.1.10",
     "ng-harmony-decorator": "^0.3.32",
     "ng-harmony-log": "^0.2.6",

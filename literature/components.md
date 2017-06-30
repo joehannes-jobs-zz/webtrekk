@@ -24,7 +24,7 @@ I like to start with the visual structure, so I get a better understanding of
 what's going on, a better mental picture, so to speak.
 
 ```pug
-table.table.table-striped
+table.table.table-striped.table-hover
 	thead
 		tr
 			th
@@ -36,7 +36,7 @@ table.table.table-striped
 			th {{tableHeaders.age.name}}
 			th {{tableHeaders.gender.name}}
 	tbody
-		tr(ng-repeat="dataset in model | orderBy:orderByName" ng-class="{active: dataset.active}")
+		tr(ng-repeat="dataset in model | orderBy:orderByName" ng-class="{danger: dataset.active}" data-index="{{dataset.id}}")
 			td {{dataset.first_name}}
 			td {{dataset.last_name}}
 			td {{dataset.age}}
@@ -86,6 +86,8 @@ export class CustomersCtrl extends EventedController {
 
 		this.$scope.orderByFirstName = 'id';
 		this.$scope.orderByLastName = 'last_name';
+		this.$scope.orderByName = 'last_name';
+
 		this._createTableHeaders();
 	}
 
@@ -108,44 +110,40 @@ export class CustomersCtrl extends EventedController {
 		};
 	}
 
-	handleEvent (ev, { scope, triggerTokens }) {
+	handleEvent (ev, { el, triggerFn, scope }) {
 		this.log({
 			level: "info",
 			msg: "handlingEventBehaviourPropagation",
 		});
 		if (scope._name.fn === "CustomersCtrl" &&
-			triggerTokens.type === "click" &&
-			triggerTokens.selector === "table>tbody") {
-			//TODO this._emit this.$scope.n ... careful n is sort-sensitive
+			triggerFn === "activate") {
 			this.log({
 				level: "warn",
-				msg: this.$scope.model[this.$scope.n],
+				msg: this.$scope.model,
 			});
 		}
 	}
 
 	@Evented({
-		selector: "table>tbody",
+		selector: "tbody",
 		type: "click",
-		delegate: "table>tbody>tr",
+		delegate: "tbody>tr",
 	})
-	activate () {
-		this.$scope.model.forEach((dataset, nthChild) => {
-			this.log({
-				level: 'info',
-				msg: dataset,
-			});
-			this.log({
-				level: 'info',
-				msg: this.$scope.n,
-			});
-			dataset.active = this.$scope.n === nthChild && !dataset.active;
+	activate (el, ev) {
+		let _el = ev.currentTarget,
+			$id = _el.getAttribute("data-index");
+		this.$scope.model.forEach((dataset) => {
+			dataset.active = dataset.id == $id && !dataset.active;
+		});
+		this.log({
+			level: 'info',
+			msg: $id,
 		});
 		this._digest();
 	}
 
 	@Evented({
-		selector: "table>thead>tr>th:first-child",
+		selector: "thead>tr>th:first-child",
 		type: "click",
 	})
 	sortByFirstName () {
@@ -156,7 +154,7 @@ export class CustomersCtrl extends EventedController {
 	}
 
 	@Evented({
-		selector: "table>thead>tr>th:nth-child(2)",
+		selector: "thead>tr>th:nth-child(2)",
 		type: "click",
 	})
 	sortByLastName () {

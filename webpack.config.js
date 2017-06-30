@@ -57,8 +57,7 @@ let config = {
 					options: {
 						formatter: require("eslint/lib/formatters/stylish"),
 						failOnWarning: false,
-						emitError: true,
-						failOnError: false
+						failOnError: true
 					}
 				}]
             }, {
