@@ -204,106 +204,78 @@ table > tbody > tr > td
 		padding-right: 15px
 ```
 
-## Customers Form Template
+## Customer Form Template
 
 I create a simple form using bootstrap and ng-model
 Those are embedded in a panel for nice looks, and bottom-attached I put the actions :)
 
 ```pug
 form(id="customer_details_form")
-	.panel-body
-		.form-group.form-inline
-			label(for="id") {{form.id.label}}
-			input.form-control.disabled(id="id" type="text" disabled ng-model="form.id.content")
-		.form-group.form-inline
-			label(for="first_name") {{form.first_name.label}}
-			input.form-control(id="first-name" type="text" placeholder="John" ng-model="form.first_name.content")
-		.form-group.form-inline
-			label(for="last_name") {{form.last_name.label}}
-			input.form-control(id="last-name" type="text" placeholder="Doe" ng-model="form.last_name.content")
-		.form-group.form-inline
-			label(for="birthday") {{form.birthday.label}}
-			input.form-control(id="birthday" type="date" placeholder="1981-07-05" ng-model="form.birthday.content")
-		.form-group.form-inline
-			label(for="gender") {{form.gender.label}}
-			select.form-control(name="gender" ng-model="form.gender.content" ng-options="o in ['m', 'w']")
-		.form-group.form-inline
-			label(for="last_contact") {{form.last_contact.label}}
-			input.form-control(id="last_contact" type="date" placeholder="2000-01-01" ng-model="form.last_contact.content")
-		.form-group.form-inline
-			label(for="customer_lifetime_value") {{form.customer_lifetime_value.label}}
-			input.form-control(id="customer_lifetime_value" type="text" placeholder="100.50" ng-model="form.customer_lifetime_value.content")
+	.panel-body.container-fluid
+		.form-group.form-inline.row
+			label(for="id").col-md-5.text-right {{model.id.label}}
+			input.form-control.disabled.col-md-7(id="id" type="text" disabled ng-model="model.id.content")
+		.form-group.form-inline.row
+			label(for="first_name").col-md-5.text-right {{model.first_name.label}}
+			input.form-control.col-md-7(id="first-name" type="text" placeholder="John" ng-model="model.first_name.content")
+		.form-group.form-inline.row
+			label(for="last_name").col-md-5.text-right {{model.last_name.label}}
+			input.form-control.col-md-7(id="last-name" type="text" placeholder="Doe" ng-model="model.last_name.content")
+		.form-group.form-inline.row
+			label(for="birthday").col-md-5.text-right {{model.age.label}}
+			input.form-control.col-md-7(id="birthday" type="date" placeholder="1981-07-05" ng-model="model.age.content")
+		.form-group.form-inline.row
+			label(for="gender").col-md-5.text-right {{model.gender.label}}
+			select.form-control.col-md-7(name="gender" ng-model="model.gender.content" ng-options="o for o in ['m', 'w']")
+		.form-group.form-inline.row
+			label(for="last_contact").col-md-5.text-right {{model.last_contact.label}}
+			input.form-control.col-md-7(id="last_contact" type="date" placeholder="2000-01-01" ng-model="model.last_contact.content")
+		.form-group.form-inline.row
+			label(for="customer_lifetime_value").col-md-5.text-right {{model.customer_lifetime_value.label}}
+			input.form-control.col-md-7(id="customer_lifetime_value" type="text" placeholder="100.50" ng-model="model.customer_lifetime_value.content")
 	.panel-footer
-		label.btn.btn-default#save Save
+		label.btn.btn-success#save Save
+		span.spacer-10 &nbsp;
 		label.btn.btn-danger#cancel Cancel
 ```
 
 
-## Customers Form
+## Customer Form
 
 ```js
 import { Logging, Controller, Component, Evented } from "ng-harmony-decorator";
 import { EventedController } from "ng-harmony-controller";
 
-import CustomersFormTpl from "./customers_form.pug";
-import "./customers_form.sass";
+import CustomersFormTpl from "./customer_form.pug";
+import "./customer_form.sass";
 
 import Config from "../../../../assets/data/config.global.json";
 
 
 @Component({
 	module: "webtrekk",
-	selector: "customers-form",
+	selector: "customerForm",
 	restrict: "E",
-	replace: false,
+	replace: true,
 	controller: "CustomersFormCtrl",
 	template: CustomersFormTpl
 })
 @Controller({
 	module: "webtrekk",
 	name: "CustomersFormCtrl",
-	deps: ["$location", "CustomerService"]
+	deps: ["$location", "$rootScope"],
+	scope: {
+		model: "@"
+	}
 })
 @Logging({
 	loggerName: "CustomersFormLogger",
 	...Config
 })
 export class CustomersFormCtrl extends EventedController {
-	form = {};
-
 	constructor(...args) {
 		super(...args);
 		this.$scope.$on("change", this.handleEvent.bind(this));
-
-		this.initialize();
-	}
-
-	async initialize () {
-		(this.model.length === 1) && this.model.forEach((customer) => {
-			this.form = {
-				id: customer.customer_id,
-				first_name: customer.first_name,
-				last_name: customer.last_name,
-				age: customer.birthday,
-				gender: customer.gender,
-				last_contact: customer.last_contact,
-				customer_lifetime_value: customer.customer_lifetime_value,
-			};
-		});
-
-		if (typeof this.form.id === "undefined") {
-			let all = await this.CustomerService.fetchCustomers();
-			let last = all[all.length - 1].customer_id;
-			this.form = {
-				id: last + 1,
-				first_name: "",
-				last_name: "",
-				age: "1991-09-15",
-				gender: "m",
-				last_contact: "2000-01-15",
-				customer_lifetime_value: 100.50,
-			};
-		}
 	}
 
 	handleEvent (ev, { scope, triggerTokens }) {
@@ -324,10 +296,10 @@ export class CustomersFormCtrl extends EventedController {
 		selector: "label#save",
 		type: "mouseup",
 	})
-	activate () {
+	saveAndReturn () {
 		this.log({
 			level: 'info',
-			msg: "Save clicked";
+			msg: "Save clicked",
 		});
 	}
 
@@ -335,15 +307,20 @@ export class CustomersFormCtrl extends EventedController {
 		selector: "label#cancel",
 		type: "mouseup",
 	})
-	sortByFirstName () {
-		this.$location.url("/");
+	cancelByReturn () {
+		this.$location.path("/");
+		this.$rootScope.$apply();
 	}
 }
 ```
 
-## Customers Table Styles
+## Customer Form Styles
 
 ```sass
-form
-	color: black
+form#customer_details_form
+	padding-left: 0
+	padding-right: 0
+
+label
+	line-height: 2.5em
 ```

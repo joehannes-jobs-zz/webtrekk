@@ -112,11 +112,7 @@ export class OverviewPageCtrl extends Ctrl {
 	}
 
 	$goToAddCustomer () {
-		this.log({
-			level: "info",
-			msg: "Goto Add Customer",
-		});
-		this.$location.url("/add");
+		this.$location.path("/add");
 	}
 }
 ```
@@ -143,7 +139,7 @@ header.page-header.row
 	.col-md-3 &nbsp;
 .row
 	.col-md-3 &nbsp;
-	customerform.panel.panel-primary.col-md-6
+	customer-form(model="{{model}}").panel.panel-primary.col-md-6
 	.col-md-3 &nbsp;
 ```
 
@@ -167,8 +163,90 @@ import { Controller } from "ng-harmony-decorator";
 @Controller({
 	module: "webtrekk",
 	name: "DetailsPageCtrl",
+	deps: ["CustomerService"],
 })
-export class DetailsPageCtrl extends Ctrl {}
+export class DetailsPageCtrl extends Ctrl {
+	constructor (...args) {
+		super(...args);
+
+		this.$scope.model = {};
+		this.initialize();
+	}
+
+	async initialize () {
+		if (this.$scope.$resolve && this.$scope.$resolve.model.length === 1) {
+			this.$scope.$resolve.model.forEach((customer) => {
+				this.$scope.model = {
+					id: {
+						label: "Customer ID",
+						content: customer.customer_id,
+					},
+					first_name: {
+						label: "First Name",
+						content: customer.first_name,
+					},
+					last_name: {
+						label: "Last Name",
+						content: customer.last_name,
+					},
+					age: {
+						label: "Birthday",
+						content: new Date(customer.birthday),
+					},
+					gender: {
+						label: "Gender",
+						content: customer.gender,
+					},
+					last_contact: {
+						label: "Last Contact",
+						content: new Date(customer.last_contact),
+					},
+					customer_lifetime_value: {
+						label: "Customer Lifetime Value",
+						content: customer.customer_lifetime_value,
+					}
+				};
+				this.$scope.heading = "Edit Customer";
+			});
+		}
+		if (typeof this.$scope.model.id === "undefined") {
+			let all = await this.CustomerService.fetchCustomers();
+			let last = all[all.length - 1].customer_id;
+			this.$scope.model = {
+				id: {
+					label: "Customer ID",
+					content: last + 1,
+				},
+				first_name: {
+					label: "First Name",
+					content: "",
+				},
+				last_name: {
+					label: "Last Name",
+					content: "",
+				},
+				age: {
+					label: "Birthday",
+					content: new Date("1991-09-15"),
+				},
+				gender: {
+					label: "Gender",
+					content: "m",
+				},
+				last_contact: {
+					label: "Last Contact",
+					content: new Date("2000-01-15"),
+				},
+				customer_lifetime_value: {
+					label: "Customer Lifetime Value",
+					content: 100.50,
+				}
+			};
+			this.$scope.heading = "Add Customer";
+		}
+		this._digest();
+	}
+}
 ```
 
 # A Details Companion - Navigation Data

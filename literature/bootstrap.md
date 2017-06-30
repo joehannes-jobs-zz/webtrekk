@@ -66,6 +66,11 @@ const routes = {
 	"/add": {
 		controller: "DetailsPageCtrl",
 		template: DetailsPageTpl,
+		resolve: {
+			observables: ["CustomerService", (CustomerService) => {
+				return CustomerService.initialized.promise;
+			}]
+		},
 	},
 	"/detail/:id": {
 		controller: "DetailsPageCtrl",
@@ -118,18 +123,19 @@ import "../../assets/styles/main.sass";
 import module from "./module";
 import routes from "./routes";
 
-import "./pages/overview"
-import "./pages/overview.sass"
+import "./pages/overview";
+import "./pages/overview.sass";
 
-import "./pages/details"
-import "./pages/details.sass"
+import "./pages/details";
+import "./pages/details.sass";
 
-import "./pages/navigation"
-import "./pages/navigation.sass"
+import "./pages/navigation";
+import "./pages/navigation.sass";
 
-import "./services/customer"
+import "./services/customer";
 
-import "./components/customers/customers"
+import "./components/customers/customers";
+import "./components/customer_form/customer_form";
 
 module.routing(routes);
 module.config(($locationProvider) => {
