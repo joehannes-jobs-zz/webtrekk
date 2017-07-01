@@ -4,19 +4,19 @@
 
 * [app/components/customers/customers.js](#Customers-Table "save:")
 * [app/components/customer_form/customer_form.js](#Customer-Form "save:")
-<!--* [app/components/nav_data/nav_data.js](#Navigation-Data "save:")-->
+* [app/components/navi_data/navi_data.js](#Navigation-Data "save:")
 *
 ### Each of those components will have a pug-template
 
 * [app/components/customers/customers.pug](#Customers-Table-Template "save:")
 * [app/components/customer_form/customer_form.pug](#Customer-Form-Template "save:")
-<!--* [app/components/nav_data/nav_data.pug](#Navigation-Data-Template "save:")-->
+* [app/components/navi_data/navi_data.pug](#Navigation-Data-Template "save:")
 
 ### And we might want to add some styling on top of bootstrap, so let's be prepared
 
 * [app/components/customers/customers.sass](#Customers-Table-Styles "save:")
 * [app/components/customer_form/customer_form.sass](#Customer-Form-Styles "save:")
-<!--* [app/components/nav_data/nav_data.sass](#Navigation-Data-Styles "save:")-->
+* [app/components/navi_data/navi_data.sass](#Navigation-Data-Styles "save:")
 
 ## Customers Table Template
 
@@ -24,7 +24,7 @@ I like to start with the visual structure, so I get a better understanding of
 what's going on, a better mental picture, so to speak.
 
 ```pug
-table.table.table-striped.table-hover
+table.table.table-striped.table-hover#overview-table
 	thead
 		tr
 			th
@@ -132,10 +132,6 @@ export class CustomersCtrl extends EventedController {
 		this.$scope.model.forEach((dataset) => {
 			dataset.active = dataset.id == $id && !dataset.active;
 		});
-		this.log({
-			level: 'info',
-			msg: $id,
-		});
 		this._digest();
 	}
 
@@ -183,22 +179,22 @@ export class CustomersCtrl extends EventedController {
 ## Customers Table Styles
 
 ```sass
-table > thead > tr > th
-	&:nth-child(1):hover, &:nth-child(2):hover
-		cursor: pointer
-		background-color: rgba(50, 50, 200, .1)
-	&:first-child
-		padding-left: 15px
-	&:last-child
-		padding-right: 15px
-
-table > tbody > tr
-	cursor: pointer
-	td
+table#overview-table
+	&> tr > th
+		&:nth-child(1):hover, &:nth-child(2):hover
+			cursor: pointer
+			background-color: rgba(50, 50, 200, .1)
 		&:first-child
 			padding-left: 15px
 		&:last-child
 			padding-right: 15px
+	&> tbody > tr
+		cursor: pointer
+		td
+			&:first-child
+				padding-left: 15px
+			&:last-child
+				padding-right: 15px
 ```
 
 ## Customer Form Template
@@ -276,10 +272,6 @@ export class CustomersFormCtrl extends EventedController {
 	}
 
 	handleEvent (ev, { scope, triggerTokens }) {
-		this.log({
-			level: "info",
-			msg: "handlingEventBehaviourPropagation",
-		});
 		if (scope._name.fn === "CustomersFormCtrl" &&
 			triggerTokens.type === "mouseup") {
 			this.log({
@@ -294,10 +286,6 @@ export class CustomersFormCtrl extends EventedController {
 		type: "mouseup",
 	})
 	async saveAndReturn () {
-		this.log({
-			level: 'info',
-			msg: "Save clicked",
-		});
 		let valid = Object.getOwnPropertyNames(this.$scope.model)
 			.map((tupel) => {
 				let valid = this.$scope.model[tupel].validate();
@@ -349,4 +337,145 @@ label
 
 input.danger
 	border-color: red
+```
+
+## Navigation Data Template
+
+This basically is (template-wise!) a copy of the Customer Table
+
+```pug
+table.table.table-striped.table-hover#navi-data--table
+	thead
+		tr
+			th
+				span.glyphicon(aria-hidden="true" ng-class="{ASC:'glyphicon-sort-by-alphabet', DESC:'glyphicon-sort-by-alphabet-alt', DEFAULT:'glyphicon-sort'}[tableHeaders.page.sorting]")
+				span {{tableHeaders.page.name}}
+			th
+				span.glyphicon(aria-hidden="true" ng-class="{ASC:'glyphicon-sort-by-order', DESC:'glyphicon-sort-by-order-alt', DEFAULT:'glyphicon-sort'}[tableHeaders.timestamp.sorting]")
+				span {{tableHeaders.timestamp.name}}
+	tbody
+		tr(ng-repeat="dataset in model | orderBy:orderByActiveHeader")
+			td {{dataset.pages}}
+			td {{dataset.timestamp}}
+```
+
+
+## Navigation Data
+
+Again, a copy of the main Overview-Table-Ctrl, at least in structure ...
+
+```js
+import { Logging, Controller, Component, Evented } from "ng-harmony-decorator";
+import { EventedController } from "ng-harmony-controller";
+
+import CustomersTpl from "./navi_data.pug";
+import "./navi_data.sass";
+
+import Config from "../../../../assets/data/config.global.json";
+
+
+@Component({
+	module: "webtrekk",
+	selector: "naviData",
+	restrict: "E",
+	replace: false,
+	controller: "NaviDataCtrl",
+	template: CustomersTpl
+})
+@Controller({
+	module: "webtrekk",
+	name: "NaviDataCtrl",
+	scope: {
+		model: "@"
+	}
+})
+@Logging({
+	loggerName: "NaviDataLogger",
+	...Config
+})
+export class NaviDataCtrl extends EventedController {
+	constructor(...args) {
+		super(...args);
+
+		this.$scope.orderByPage = 'id';
+		this.$scope.orderByTimestamp = 'timestamp';
+		this.$scope.orderByActiveHeader = 'timestamp';
+
+		this._createTableHeaders();
+	}
+
+	_createTableHeaders () {
+		this.$scope.tableHeaders = {
+			"page": {
+				name: "Page",
+				sorting: "DEFAULT",
+			},
+			"timestamp": {
+				name: "Timestamp",
+				sorting: "ASC",
+			},
+		};
+	}
+
+	@Evented({
+		selector: "thead>tr>th:first-child",
+		type: "click",
+	})
+	sortByPage () {
+		this.sortBy("timestamp", true)
+		this.sortBy("page");
+		this.$scope.orderByActiveHeader = this.$scope.tableHeaders.page.ordering;
+		this._digest();
+	}
+
+	@Evented({
+		selector: "thead>tr>th:nth-child(2)",
+		type: "click",
+	})
+	sortByTimestamp () {
+		this.sortBy("page", true)
+		this.sortBy("timestamp");
+		this.$scope.orderByActiveHeader = this.$scope.tableHeaders.timestamp.ordering;
+		this._digest();
+	}
+
+	sortBy (attr, reset) {
+		let sortOrders = ["DEFAULT", "ASC", "DESC"],
+			orderBy = {
+				page: ['id', 'pages', '-pages'],
+				timestamp: ['id', 'timestamp', '-timestamp']
+			},
+			order = 0;
+		!reset && sortOrders.every((sortOrder, i) => {
+			if (sortOrder === this.$scope.tableHeaders[attr].sorting) {
+				order = i === 2 ? 0 : i + 1;
+				return false;
+			}
+			return true;
+		});
+		this.$scope.tableHeaders[attr].sorting = sortOrders[order];
+		this.$scope.tableHeaders[attr].ordering = orderBy[attr][order];
+	}
+}
+```
+
+## Navigation Data Styles
+
+```sass
+table#navi-data--table
+	&> thead > tr > th
+		&:nth-child(1):hover, &:nth-child(2):hover
+			cursor: pointer
+			background-color: rgba(50, 50, 200, .1)
+		&:first-child
+			padding-left: 15px
+		&:last-child
+			padding-right: 15px
+
+	&> tbody > tr
+		td
+			&:first-child
+				padding-left: 15px
+			&:last-child
+				padding-right: 15px
 ```

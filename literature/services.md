@@ -49,26 +49,32 @@ export class CustomerService extends Srvc {
 	async _create () {
 		RxDB.plugin(Adapter);
 		this.db = await RxDB.create({
-			name: "webtrekk1",             // <- name
+			name: "webtrekk",             // <- name
 			adapter: "idb",           // <- storage-adapter
-			multiInstance: false         // <- multiInstance (default: true)
+			multiInstance: false,         // <- multiInstance (default: true)
 		});
 
 		await this.db.collection({
 			name: "customer",
-			schema: CustomerSchema
+			schema: CustomerSchema,
 		});
 
 		CustomerPayload.data.forEach((c) => {
-			this.db.customer.upsert(c);
+			this.upsertCustomer(c);
 		});
 
 		await this.db.collection({
 			name: "navigation",
-			schema: NavigationSchema
+			schema: NavigationSchema,
 		});
-		NavigationPayload.data.forEach((c) => {
-			this.db.navigation.insert(c);
+		let oldDocs = await this.fetchNaviData();
+		NavigationPayload.data.forEach((n) => {
+			let dupe = oldDocs.some((o) => {
+				return (o.customer_id === n.customer_id &&
+					o.pages === n.pages &&
+					o.timestamp === n.timestamp);
+			});
+			!dupe && this.db.navigation.insert(n);
 		});
 
 		this.initialized.resolve();
@@ -84,7 +90,7 @@ export class CustomerService extends Srvc {
 		return this.db.customer
 			.find()
 			.where("customer_id")
-			.eq(id)
+			.eq(id.toString())
 			.exec();
 	}
 	async upsertCustomer (c) {
@@ -94,12 +100,18 @@ export class CustomerService extends Srvc {
 		let doc = await this.customerSearch(id.toString());
 		return doc[0].remove();
 	}
-	navigationSearch (id) {
+	fetchNaviData() {
+		this.db.navigation._queryCache.destroy();
+		return this.db.navigation
+			.find()
+			.exec();
+	}
+	naviDataSearch (id) {
 		this.db.navigation._queryCache.destroy();
 		return this.db.navigation
 			.find()
 			.where("customer_id")
-			.eq(id)
+			.eq(id.toString())
 			.exec();
 	}
 	subscribeCustomer (observer) {

@@ -42,7 +42,7 @@ header.page-header.row
 					label.btn.btn-default(ng-click="$goToEditCustomer()" ng-disabled="$selection()") Edit
 					label.btn.btn-danger(ng-click="$deleteActiveCustomer()" ng-disabled="$selection()") Delete
 				span.spacer-10 &nbsp;
-				label.btn.btn-default(ng-disabled="$selection()") Navi
+				label.btn.btn-default(ng-click="$goToNaviData()" ng-disabled="$selection()") Navi
 		customers(model="{{model}}").panel-body
 	.col-md-3 &nbsp;
 ```
@@ -124,6 +124,12 @@ export class OverviewPageCtrl extends Ctrl {
 		let id = this._getActiveId();
 		this.$location.path(`/detail/${id}`);
 	}
+
+	$goToNaviData () {
+		let id = this._getActiveId();
+		this.$location.path(`/navigation/${id}`);
+	}
+
 	async $deleteActiveCustomer() {
 		let id = this._getActiveId();
 		await this.CustomerService.deleteCustomer(id);
@@ -305,47 +311,75 @@ export class DetailsPageCtrl extends Ctrl {
 # A Details Companion - Navigation Data
 
 It consists of
-* [/views/navigation.pug](#Navigation-View "save:")
-* [app/pages/navigation.sass](#Navigation-PageStyles "save:")
-* [app/pages/navigation.js](#Navigation-PageCtrl "save:")
+* [/views/navigation.pug](#Navigation-Page-View "save:")
+* [app/pages/navigation.sass](#Navigation-Page-Styles "save:")
+* [app/pages/navigation.js](#Navigation-Page-Ctrl "save:")
 
-## Navigation View
+## Navigation Page View
 
 Here again the reference image:
 
 ![customer overview](/assets/docs/navigation.png)
 
 ```pug
-h1#navigation-header Navigation Data for {user.name}
-table
-	tr
-		th Page
-		th Timestamp
-	tr
-		td X
-		td 2013-07-07
+header.page-header.row
+	.col-md-3 &nbsp;
+	.col-md-6: h1#navigation-header Navigation Data for {{customer}}
+	.col-md-3 &nbsp;
+.row
+	.col-md-3 &nbsp;
+	article.panel.panel-primary.col-md-6
+		navi-data(model="{{model}}").panel-body
+		.panel-footer
+			label.btn.btn-default(ng-click="$goToOverview()") Back To Overview
+	.col-md-3 &nbsp;
 ```
 
-## Navigation PageStyles
+## Navigation Page Styles
 
 ```sass
 h1#navigation-header
-	color: green
+	font-weight: bold
+
+article.panel
+	padding-left: 0
+	padding-right: 0
+	box-shadow: 0px 10px 25px 5px rgba(150, 150, 150, 0.5)
 ```
 
-## Navigation PageCtrl
+## Navigation Page Ctrl
 
-Same thing here :)
+Let's get the party started!
 
 ```js
 import "./navigation.sass";
 
 import { Controller as Ctrl } from "ng-harmony-core";
-import { Controller } from "ng-harmony-decorator";
+import { Controller, Logging } from "ng-harmony-decorator";
+
+import * as Config from "../../../assets/data/config.global.json";
 
 @Controller({
 	module: "webtrekk",
 	name: "NavigationPageCtrl",
+	deps: ["observedModel", "$location"]
 })
-export class NavigationPageCtrl extends Ctrl {}
+@Logging({
+	loggerName: "NavigationPageLogger",
+	...Config
+})
+export class NavigationPageCtrl extends Ctrl {
+	constructor (...args) {
+		super(...args);
+		this.log({
+			level: "warn",
+			msg: this.observedModel
+		});
+		this.$scope.model = [].concat(this.observedModel);
+	}
+
+	$goToOverview () {
+		this.$location.url("/");
+	}
+}
 ```

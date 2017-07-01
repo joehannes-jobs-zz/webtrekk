@@ -86,6 +86,12 @@ const routes = {
 	"/navigation/:id": {
 		controller: "NavigationPageCtrl",
 		template: NavigationPageTpl,
+		resolve: {
+			observedModel: ["$route", "CustomerService", async ($route, CustomerService) => {
+				CustomerService.initialized.promise;
+				return CustomerService.naviDataSearch($route.current.params.id);
+			}],
+		},
 	}
 };
 
@@ -126,7 +132,6 @@ import module from "./module";
 import routes from "./routes";
 
 import "./pages/overview";
-import "./pages/overview.sass";
 
 import "./pages/details";
 import "./pages/details.sass";
@@ -138,6 +143,7 @@ import "./services/customer";
 
 import "./components/customers/customers";
 import "./components/customer_form/customer_form";
+import "./components/navi_data/navi_data";
 
 module.routing(routes);
 module.config(($locationProvider) => {
