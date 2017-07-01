@@ -214,22 +214,22 @@ form(id="customer_details_form")
 			input.form-control.disabled.col-md-7(id="id" type="text" disabled ng-model="model.id.content")
 		.form-group.form-inline.row
 			label(for="first_name").col-md-5.text-right {{model.first_name.label}}
-			input.form-control.col-md-7(id="first-name" type="text" placeholder="John" ng-model="model.first_name.content")
+			input.form-control.col-md-7(id="first-name" type="text" placeholder="John" ng-model="model.first_name.content" ng-class="{danger: model.first_name.valid === false}")
 		.form-group.form-inline.row
 			label(for="last_name").col-md-5.text-right {{model.last_name.label}}
-			input.form-control.col-md-7(id="last-name" type="text" placeholder="Doe" ng-model="model.last_name.content")
+			input.form-control.col-md-7(id="last-name" type="text" placeholder="Doe" ng-model="model.last_name.content" ng-class="{danger: model.last_name.valid === false}")
 		.form-group.form-inline.row
 			label(for="birthday").col-md-5.text-right {{model.age.label}}
-			input.form-control.col-md-7(id="birthday" type="date" placeholder="1981-07-05" ng-model="model.age.content")
+			input.form-control.col-md-7(id="birthday" type="date" placeholder="1981-07-05" ng-model="model.age.content" ng-class="{danger: model.age.valid === false}")
 		.form-group.form-inline.row
 			label(for="gender").col-md-5.text-right {{model.gender.label}}
-			select.form-control.col-md-7(name="gender" ng-model="model.gender.content" ng-options="o for o in ['m', 'w']")
+			select.form-control.col-md-7(name="gender" ng-model="model.gender.content" ng-options="o for o in ['m', 'w']" ng-class="{danger: model.gender.valid === false}")
 		.form-group.form-inline.row
 			label(for="last_contact").col-md-5.text-right {{model.last_contact.label}}
-			input.form-control.col-md-7(id="last_contact" type="date" placeholder="2000-01-01" ng-model="model.last_contact.content")
+			input.form-control.col-md-7(id="last_contact" type="date" placeholder="2000-01-01" ng-model="model.last_contact.content" ng-class="{danger: model.last_contact.valid === false}")
 		.form-group.form-inline.row
 			label(for="customer_lifetime_value").col-md-5.text-right {{model.customer_lifetime_value.label}}
-			input.form-control.col-md-7(id="customer_lifetime_value" type="text" placeholder="100.50" ng-model="model.customer_lifetime_value.content")
+			input.form-control.col-md-7(id="customer_lifetime_value" type="text" placeholder="100.50" ng-model="model.customer_lifetime_value.content" ng-class="{danger: model.customer_lifetime_value.valid === false}")
 	.panel-footer
 		label.btn.btn-success#save Save
 		span.spacer-10 &nbsp;
@@ -260,7 +260,7 @@ import Config from "../../../../assets/data/config.global.json";
 @Controller({
 	module: "webtrekk",
 	name: "CustomersFormCtrl",
-	deps: ["$location", "$rootScope"],
+	deps: ["$location", "$rootScope", "CustomerService"],
 	scope: {
 		model: "@"
 	}
@@ -293,11 +293,37 @@ export class CustomersFormCtrl extends EventedController {
 		selector: "label#save",
 		type: "mouseup",
 	})
-	saveAndReturn () {
+	async saveAndReturn () {
 		this.log({
 			level: 'info',
 			msg: "Save clicked",
 		});
+		let valid = Object.getOwnPropertyNames(this.$scope.model)
+			.map((tupel) => {
+				let valid = this.$scope.model[tupel].validate();
+				if (!valid) {
+					this.log({
+						level: "error",
+						msg: `${this.$scope.model[tupel].label} cannot be ${this.$scope.model[tupel].content} -- invalid`,
+					});
+				}
+				this.$scope.model[tupel].valid = valid;
+				return valid;
+			}).reduce((acc, tupel) => acc && tupel);
+		if (valid) {
+			await this.CustomerService.upsertCustomer({
+				customer_id: this.$scope.model.id.content,
+				first_name: this.$scope.model.first_name.content,
+				last_name: this.$scope.model.last_name.content,
+				birthday: this.$scope.model.age.content.toString(),
+				gender: this.$scope.model.gender.content,
+				last_contact: this.$scope.model.last_contact.content.toString(),
+				customer_lifetime_value: this.$scope.model.customer_lifetime_value.content,
+			});
+			this.$location.url("/");
+			this.$rootScope.$apply();
+		}
+		this._digest();
 	}
 
 	@Evented({
@@ -320,4 +346,7 @@ form#customer_details_form
 
 label
 	line-height: 2.5em
+
+input.danger
+	border-color: red
 ```

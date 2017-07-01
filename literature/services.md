@@ -87,6 +87,13 @@ export class CustomerService extends Srvc {
 			.eq(id)
 			.exec();
 	}
+	async upsertCustomer (c) {
+		return await this.db.customer.upsert(c);
+	}
+	async deleteCustomer (id) {
+		let doc = await this.customerSearch(id.toString());
+		return doc[0].remove();
+	}
 	navigationSearch (id) {
 		this.db.navigation._queryCache.destroy();
 		return this.db.navigation

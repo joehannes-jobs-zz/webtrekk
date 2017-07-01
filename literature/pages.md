@@ -39,8 +39,8 @@ header.page-header.row
 			label.btn.btn-default(ng-click="$goToAddCustomer()") Add New Customer
 			.pull-right
 				.btn-group(role="group")
-					label.btn.btn-default(ng-disabled="$selection()") Edit
-					label.btn.btn-danger(ng-disabled="$selection()") Delete
+					label.btn.btn-default(ng-click="$goToEditCustomer()" ng-disabled="$selection()") Edit
+					label.btn.btn-danger(ng-click="$deleteActiveCustomer()" ng-disabled="$selection()") Delete
 				span.spacer-10 &nbsp;
 				label.btn.btn-default(ng-disabled="$selection()") Navi
 		customers(model="{{model}}").panel-body
@@ -84,8 +84,6 @@ export class OverviewPageCtrl extends Ctrl {
 	constructor (...args) {
 		super(...args);
 
-		this.$scope.$on("change", this.handleEvent.bind(this));
-
 		this.$scope.model = [];
 		this.initialize();
 	}
@@ -105,22 +103,34 @@ export class OverviewPageCtrl extends Ctrl {
 		});
 		this._digest();
 	}
-	$selection () {
-		return this.$scope.model.filter((ds) => ds.active ).length === 0;
-	}
-	handleEvent (ev, opts) {
-		this.log({
-			level: 'warn',
-			msg: opts
-		});
-	}
 
 	transformBirthday (time) {
 		return Math.floor((new Date().getTime() - new Date(time).getTime()) / 1000 / 3600 / 24 / 365.25);
 	}
 
+	$selection () {
+		return this.$scope.model.filter((ds) => ds.active).length === 0;
+	}
+	_getActiveId () {
+		return this.$scope.model.reduce((a, b) => {
+			return b.active ? a + +b.id : a;
+		}, 0);
+	}
 	$goToAddCustomer () {
 		this.$location.path("/add");
+	}
+
+	$goToEditCustomer () {
+		let id = this._getActiveId();
+		this.$location.path(`/detail/${id}`);
+	}
+	async $deleteActiveCustomer() {
+		let id = this._getActiveId();
+		await this.CustomerService.deleteCustomer(id);
+		this.$scope.model.splice(this.$scope.model.reduce((a, b, i) => {
+			return b.active ? a + i : a;
+		}, 0), 1);
+		this._digest();
 	}
 }
 ```
@@ -166,12 +176,18 @@ Same thing here :)
 import "./details.sass";
 
 import { Controller as Ctrl } from "ng-harmony-core";
-import { Controller } from "ng-harmony-decorator";
+import { Controller, Logging } from "ng-harmony-decorator";
+
+import * as Config from "../../../assets/data/config.global.json";
 
 @Controller({
 	module: "webtrekk",
 	name: "DetailsPageCtrl",
-	deps: ["CustomerService"],
+	deps: ["CustomerService", "observedModel"],
+})
+@Logging({
+	loggerName: "DetailsPageLogger",
+	...Config,
 })
 export class DetailsPageCtrl extends Ctrl {
 	constructor (...args) {
@@ -182,8 +198,12 @@ export class DetailsPageCtrl extends Ctrl {
 	}
 
 	async initialize () {
-		if (this.$scope.$resolve && this.$scope.$resolve.model.length === 1) {
-			this.$scope.$resolve.model.forEach((customer) => {
+		this.log({
+			level: "info",
+			msg: this.$scope
+		});
+		if (this.observedModel && this.observedModel.length === 1) {
+			this.observedModel.forEach((customer) => {
 				this.$scope.model = {
 					id: {
 						label: "Customer ID",
@@ -223,7 +243,7 @@ export class DetailsPageCtrl extends Ctrl {
 			this.$scope.model = {
 				id: {
 					label: "Customer ID",
-					content: last + 1,
+					content: (+last + 1).toString(),
 				},
 				first_name: {
 					label: "First Name",
@@ -252,6 +272,31 @@ export class DetailsPageCtrl extends Ctrl {
 			};
 			this.$scope.heading = "Add Customer";
 		}
+		Object.getOwnPropertyNames(this.$scope.model).forEach((key) => {
+			switch (key) {
+				case "first_name":
+				case "last_name":
+				case "gender":
+					this.$scope.model[key].validate = (function() {
+						return (typeof this.content === "string" && this.content.length > 0);
+					}).bind(this.$scope.model[key]);
+					break;
+				case "age":
+				case "last_contact":
+					//pretty hard to check this for being empty
+					//as it always remembers the last date
+					//as not required in the specs I continue
+					this.$scope.model[key].validate = () => true;
+					break;
+				case "customer_lifetime_value":
+					this.$scope.model[key].validate = (function() {
+						return !isNaN(this.content);
+					}).bind(this.$scope.model[key]);
+					break;
+				default:
+					this.$scope.model[key].validate = () => true;
+			}
+		});
 		this._digest();
 	}
 }

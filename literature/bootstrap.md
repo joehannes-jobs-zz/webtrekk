@@ -60,7 +60,7 @@ const routes = {
 		resolve: {
 			observables: ["CustomerService", (CustomerService) => {
 				return CustomerService.initialized.promise;
-			}]
+			}],
 		},
 	},
 	"/add": {
@@ -69,17 +69,19 @@ const routes = {
 		resolve: {
 			observables: ["CustomerService", (CustomerService) => {
 				return CustomerService.initialized.promise;
-			}]
+			}],
+			observedModel: () => true
 		},
 	},
 	"/detail/:id": {
 		controller: "DetailsPageCtrl",
 		template: DetailsPageTpl,
 		resolve: {
-			model: ["$route", "CustomerService", ($route, CustomerService) => {
-				return CustomerService.customerSearch($route.current.params.id)
-;			}]
-		}
+			observedModel: ["$route", "CustomerService", async ($route, CustomerService) => {
+				await CustomerService.initialized.promise;
+				return CustomerService.customerSearch($route.current.params.id);
+			}],
+		},
 	},
 	"/navigation/:id": {
 		controller: "NavigationPageCtrl",
