@@ -57,8 +57,7 @@ let config = {
 					options: {
 						formatter: require("eslint/lib/formatters/stylish"),
 						failOnWarning: false,
-						emitError: true,
-						failOnError: false
+						failOnError: true
 					}
 				}]
             }, {
@@ -73,7 +72,7 @@ let config = {
                 ]
             }, {
 				include: /\.pug/,
-				loader: ['raw-loader', 'pug-html-loader'],
+				loader: ['html-loader', 'pug-html-loader'],
 			}, {
                 test: /\.sass$/,
                 use: isProd ?
@@ -83,7 +82,7 @@ let config = {
 						}, {
 							loader: "sass-loader",
 							options: {
-								includePaths: ["/assets/styles", "/styles"]
+								includePaths: ["/assets/styles", "/styles", "/node_modules"]
 							}
 						}]
 					}) : [
@@ -94,7 +93,7 @@ let config = {
                     }, {
                         loader: "sass-loader", // compiles Sass to CSS
                         options: {
-                            includePaths: ["/assets/styles", "/styles"],
+                            includePaths: ["/assets/styles", "/styles", "/node_modules"],
 							sourceMap: true
                         }
                     }

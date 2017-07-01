@@ -60,16 +60,38 @@ const routes = {
 		resolve: {
 			observables: ["CustomerService", (CustomerService) => {
 				return CustomerService.initialized.promise;
-			}]
+			}],
+		},
+	},
+	"/add": {
+		controller: "DetailsPageCtrl",
+		template: DetailsPageTpl,
+		resolve: {
+			observables: ["CustomerService", (CustomerService) => {
+				return CustomerService.initialized.promise;
+			}],
+			observedModel: () => true
 		},
 	},
 	"/detail/:id": {
 		controller: "DetailsPageCtrl",
 		template: DetailsPageTpl,
+		resolve: {
+			observedModel: ["$route", "CustomerService", async ($route, CustomerService) => {
+				await CustomerService.initialized.promise;
+				return CustomerService.customerSearch($route.current.params.id);
+			}],
+		},
 	},
 	"/navigation/:id": {
 		controller: "NavigationPageCtrl",
 		template: NavigationPageTpl,
+		resolve: {
+			observedModel: ["$route", "CustomerService", async ($route, CustomerService) => {
+				CustomerService.initialized.promise;
+				return CustomerService.naviDataSearch($route.current.params.id);
+			}],
+		},
 	}
 };
 
@@ -109,14 +131,19 @@ import "../../assets/styles/main.sass";
 import module from "./module";
 import routes from "./routes";
 
-import "./pages/overview"
-import "./pages/overview.sass"
+import "./pages/overview";
 
-import "./pages/details"
-import "./pages/details.sass"
+import "./pages/details";
+import "./pages/details.sass";
 
-import "./pages/navigation"
-import "./pages/navigation.sass"
+import "./pages/navigation";
+import "./pages/navigation.sass";
+
+import "./services/customer";
+
+import "./components/customers/customers";
+import "./components/customer_form/customer_form";
+import "./components/navi_data/navi_data";
 
 module.routing(routes);
 module.config(($locationProvider) => {

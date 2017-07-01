@@ -1,6 +1,6 @@
 {
   "name": "webtrekk",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "description": "An AngularJS / Bootstrap / Jasmine / LocalStorage Demo",
   "scripts": {
     "serve": "node_modules/.bin/rimraf build && gulp compile && gulp serve",
@@ -96,7 +96,8 @@
     "angular-animate": "^1.6.4",
     "angular-route": "^1.6.4",
     "angular-ui-bootstrap": "^2.5.0",
-    "ng-harmony-controller": "0.0.12",
+    "bootstrap-sass": "^3.3.7",
+    "ng-harmony-controller": "^0.1.9",
     "ng-harmony-core": "^0.1.10",
     "ng-harmony-decorator": "^0.3.32",
     "ng-harmony-log": "^0.2.6",

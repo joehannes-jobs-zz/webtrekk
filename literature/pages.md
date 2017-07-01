@@ -28,16 +28,35 @@ Here again the reference image:
 Pretty Simple :)
 
 ```pug
-h1#overview-header Customer Overview
-button(button) Add New Customer
-table
+header.page-header.row
+	.col-md-3 &nbsp;
+	.col-md-6: h1#overview-header Customer Overview
+	.col-md-3 &nbsp;
+.row
+	.col-md-3 &nbsp;
+	article.panel.panel-primary.col-md-6
+		.panel-heading
+			label.btn.btn-default(ng-click="$goToAddCustomer()") Add New Customer
+			.pull-right
+				.btn-group(role="group")
+					label.btn.btn-default(ng-click="$goToEditCustomer()" ng-disabled="$selection()") Edit
+					label.btn.btn-danger(ng-click="$deleteActiveCustomer()" ng-disabled="$selection()") Delete
+				span.spacer-10 &nbsp;
+				label.btn.btn-default(ng-click="$goToNaviData()" ng-disabled="$selection()") Navi
+		customers(model="{{model}}").panel-body
+	.col-md-3 &nbsp;
 ```
 
 ## Overview PageStyles
 
 ```sass
 h1#overview-header
-	color: red
+	font-weight: bold
+
+article.panel
+	padding-left: 0
+	padding-right: 0
+	box-shadow: 0px 10px 25px 5px rgba(150, 150, 150, 0.5)
 ```
 
 ## Overview PageCtrl
@@ -48,13 +67,78 @@ Let's get the party started!
 import "./overview.sass";
 
 import { Controller as Ctrl } from "ng-harmony-core";
-import { Controller } from "ng-harmony-decorator";
+import { Controller, Logging } from "ng-harmony-decorator";
+
+import * as Config from "../../../assets/data/config.global.json";
 
 @Controller({
 	module: "webtrekk",
 	name: "OverviewPageCtrl",
+	deps: ["CustomerService", "$location"]
 })
-export class OverviewPageCtrl extends Ctrl {}
+@Logging({
+	loggerName: "OverviewPageLogger",
+	...Config
+})
+export class OverviewPageCtrl extends Ctrl {
+	constructor (...args) {
+		super(...args);
+
+		this.$scope.model = [];
+		this.initialize();
+	}
+
+	async initialize () {
+		let customers = await this.CustomerService.fetchCustomers();
+		customers && customers.forEach((customer) => {
+			this.$scope.model.push({
+				id: customer.customer_id,
+				first_name: customer.first_name,
+				last_name: customer.last_name,
+				age: this.transformBirthday(customer.birthday),
+				gender: customer.gender,
+				last_contact: customer.last_contact,
+				customer_lifetime_value: customer.customer_lifetime_value,
+			});
+		});
+		this._digest();
+	}
+
+	transformBirthday (time) {
+		return Math.floor((new Date().getTime() - new Date(time).getTime()) / 1000 / 3600 / 24 / 365.25);
+	}
+
+	$selection () {
+		return this.$scope.model.filter((ds) => ds.active).length === 0;
+	}
+	_getActiveId () {
+		return this.$scope.model.reduce((a, b) => {
+			return b.active ? a + +b.id : a;
+		}, 0);
+	}
+	$goToAddCustomer () {
+		this.$location.path("/add");
+	}
+
+	$goToEditCustomer () {
+		let id = this._getActiveId();
+		this.$location.path(`/detail/${id}`);
+	}
+
+	$goToNaviData () {
+		let id = this._getActiveId();
+		this.$location.path(`/navigation/${id}`);
+	}
+
+	async $deleteActiveCustomer() {
+		let id = this._getActiveId();
+		await this.CustomerService.deleteCustomer(id);
+		this.$scope.model.splice(this.$scope.model.reduce((a, b, i) => {
+			return b.active ? a + i : a;
+		}, 0), 1);
+		this._digest();
+	}
+}
 ```
 
 # Time to add some detail
@@ -73,12 +157,14 @@ Here again the reference image:
 Pretty Simple :)
 
 ```pug
-h1#details-header Customer Details
-form
-	label Field
-	input
-	button.button Save
-	button.button Cancel
+header.page-header.row
+	.col-md-3 &nbsp;
+	.col-md-6: h1#overview-header {{heading}}
+	.col-md-3 &nbsp;
+.row
+	.col-md-3 &nbsp;
+	customer-form(model="{{model}}").panel.panel-primary.col-md-6
+	.col-md-3 &nbsp;
 ```
 
 ## Details PageStyles
@@ -96,59 +182,204 @@ Same thing here :)
 import "./details.sass";
 
 import { Controller as Ctrl } from "ng-harmony-core";
-import { Controller } from "ng-harmony-decorator";
+import { Controller, Logging } from "ng-harmony-decorator";
+
+import * as Config from "../../../assets/data/config.global.json";
 
 @Controller({
 	module: "webtrekk",
 	name: "DetailsPageCtrl",
+	deps: ["CustomerService", "observedModel"],
 })
-export class DetailsPageCtrl extends Ctrl {}
+@Logging({
+	loggerName: "DetailsPageLogger",
+	...Config,
+})
+export class DetailsPageCtrl extends Ctrl {
+	constructor (...args) {
+		super(...args);
+
+		this.$scope.model = {};
+		this.initialize();
+	}
+
+	async initialize () {
+		this.log({
+			level: "info",
+			msg: this.$scope
+		});
+		if (this.observedModel && this.observedModel.length === 1) {
+			this.observedModel.forEach((customer) => {
+				this.$scope.model = {
+					id: {
+						label: "Customer ID",
+						content: customer.customer_id,
+					},
+					first_name: {
+						label: "First Name",
+						content: customer.first_name,
+					},
+					last_name: {
+						label: "Last Name",
+						content: customer.last_name,
+					},
+					age: {
+						label: "Birthday",
+						content: new Date(customer.birthday),
+					},
+					gender: {
+						label: "Gender",
+						content: customer.gender,
+					},
+					last_contact: {
+						label: "Last Contact",
+						content: new Date(customer.last_contact),
+					},
+					customer_lifetime_value: {
+						label: "Customer Lifetime Value",
+						content: customer.customer_lifetime_value,
+					}
+				};
+				this.$scope.heading = "Edit Customer";
+			});
+		}
+		if (typeof this.$scope.model.id === "undefined") {
+			let all = await this.CustomerService.fetchCustomers();
+			let last = all[all.length - 1].customer_id;
+			this.$scope.model = {
+				id: {
+					label: "Customer ID",
+					content: (+last + 1).toString(),
+				},
+				first_name: {
+					label: "First Name",
+					content: "",
+				},
+				last_name: {
+					label: "Last Name",
+					content: "",
+				},
+				age: {
+					label: "Birthday",
+					content: new Date("1991-09-15"),
+				},
+				gender: {
+					label: "Gender",
+					content: "m",
+				},
+				last_contact: {
+					label: "Last Contact",
+					content: new Date("2000-01-15"),
+				},
+				customer_lifetime_value: {
+					label: "Customer Lifetime Value",
+					content: 100.50,
+				}
+			};
+			this.$scope.heading = "Add Customer";
+		}
+		Object.getOwnPropertyNames(this.$scope.model).forEach((key) => {
+			switch (key) {
+				case "first_name":
+				case "last_name":
+				case "gender":
+					this.$scope.model[key].validate = (function() {
+						return (typeof this.content === "string" && this.content.length > 0);
+					}).bind(this.$scope.model[key]);
+					break;
+				case "age":
+				case "last_contact":
+					//pretty hard to check this for being empty
+					//as it always remembers the last date
+					//as not required in the specs I continue
+					this.$scope.model[key].validate = () => true;
+					break;
+				case "customer_lifetime_value":
+					this.$scope.model[key].validate = (function() {
+						return !isNaN(this.content);
+					}).bind(this.$scope.model[key]);
+					break;
+				default:
+					this.$scope.model[key].validate = () => true;
+			}
+		});
+		this._digest();
+	}
+}
 ```
 
 # A Details Companion - Navigation Data
 
 It consists of
-* [/views/navigation.pug](#Navigation-View "save:")
-* [app/pages/navigation.sass](#Navigation-PageStyles "save:")
-* [app/pages/navigation.js](#Navigation-PageCtrl "save:")
+* [/views/navigation.pug](#Navigation-Page-View "save:")
+* [app/pages/navigation.sass](#Navigation-Page-Styles "save:")
+* [app/pages/navigation.js](#Navigation-Page-Ctrl "save:")
 
-## Navigation View
+## Navigation Page View
 
 Here again the reference image:
 
 ![customer overview](/assets/docs/navigation.png)
 
 ```pug
-h1#navigation-header Navigation Data for {user.name}
-table
-	tr
-		th Page
-		th Timestamp
-	tr
-		td X
-		td 2013-07-07
+header.page-header.row
+	.col-md-3 &nbsp;
+	.col-md-6: h1#navigation-header Navigation Data for {{customer}}
+	.col-md-3 &nbsp;
+.row
+	.col-md-3 &nbsp;
+	article.panel.panel-primary.col-md-6
+		navi-data(model="{{model}}").panel-body
+		.panel-footer
+			label.btn.btn-default(ng-click="$goToOverview()") Back To Overview
+	.col-md-3 &nbsp;
 ```
 
-## Navigation PageStyles
+## Navigation Page Styles
 
 ```sass
 h1#navigation-header
-	color: green
+	font-weight: bold
+
+article.panel
+	padding-left: 0
+	padding-right: 0
+	box-shadow: 0px 10px 25px 5px rgba(150, 150, 150, 0.5)
 ```
 
-## Navigation PageCtrl
+## Navigation Page Ctrl
 
-Same thing here :)
+Let's get the party started!
 
 ```js
 import "./navigation.sass";
 
 import { Controller as Ctrl } from "ng-harmony-core";
-import { Controller } from "ng-harmony-decorator";
+import { Controller, Logging } from "ng-harmony-decorator";
+
+import * as Config from "../../../assets/data/config.global.json";
 
 @Controller({
 	module: "webtrekk",
 	name: "NavigationPageCtrl",
+	deps: ["observedModel", "$location"]
 })
-export class NavigationPageCtrl extends Ctrl {}
+@Logging({
+	loggerName: "NavigationPageLogger",
+	...Config
+})
+export class NavigationPageCtrl extends Ctrl {
+	constructor (...args) {
+		super(...args);
+		this.log({
+			level: "warn",
+			msg: this.observedModel
+		});
+		this.$scope.model = [].concat(this.observedModel);
+	}
+
+	$goToOverview () {
+		this.$location.url("/");
+	}
+}
 ```
