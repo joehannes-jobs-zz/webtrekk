@@ -1,0 +1,30 @@
+{
+	"title": "customer",
+	"version": 0,
+	"description": "describes a customer's details",
+	"type": "object",
+	"properties": {
+		"customer_id": {
+			"type": "string",
+			"primary": true
+		},
+		"first_name": {
+			"type": "string"
+		},
+		"last_name": {
+			"type": "string"
+		},
+		"birthday": {
+			"type": "string"
+		},
+		"gender": {
+			"type": "string"
+		},
+		"last_contact": {
+			"type": "string"
+		},
+		"customer_lifetime_value": {
+			"type": "number"
+		}
+	}
+}
