@@ -1,5 +1,63 @@
 # Webtrekk AngularJS Demo by Joehannes
 
+## Introduction
+
+I chose literate programming, because
+* proper documentation was requested in the first place
+* it's a decent way to code and document at the same time
+* one can easily combine packages of files which belong together into one story-chapter
+* wanted to try that out for a long time anyway
+
+The only drawback from writing markdown with many files combined into story-chapters
+is the lack of proper eslint-integration, at least as of now in my editor of choice (Atom)
+and to my best knowledge.
+Should you get it working somehow properly, let me know ...
+I filed an issue on github :)
+
+One more thing to be aware of is, that I used my own angular-js lib with this project.
+I wrote it and think it's a decent piece of helper software.
+It let's you write angularjs in the style of angular.
+
+You'll see. The lib can be found on [github](http://www.github.com/ng-harmony)
+
+## Gist
+
+The task was a relatively easy one as I came prepared
+* I already had used RxDB as a localStorage in another project
+* I haven't used bootstrap for a long time, but it's straightforward methinks
+* I got my lib ready to use and I just like coding that way
+
+I like to create angular-like a Page-Component/Controller for (kinda) each route,
+kinda a container. All structure that seems reusable gets component-encapsulated.
+
+Also, I like to create the visual (html) structure first, as it seems to give me a bigger picture of things.
+
+## Timetracking
+
+It took me longer than anticipated, which is mainly due to my setup.
+* I started almost completely from scratch (copied a webpack config)
+* I used a the literate programming approach and it took me some time get things running
+* I had some additional trouble with webpack and the dev server ...
+
+Apart from that, I'm very happy to present a decent solution and after you didn't have to
+wait a long time for the solution as the weekend came in handy :)
+
+If you want to check out what time I spent on what, I kindly refer you to [wakatime](https://wakatime.com/@joehannes/projects/mlugtebunv?start=2017-06-26&end=2017-07-02),
+which I got integrated in my Code-Editor and Browser.
+
+![Wakatime Chart](assets/images/wakatime.png)
+
+## Further Reading and Implementation Details
+
+Please navigate to the literature folder and find markdown files, nicely readable with
+your favorite markdown-viewer or on github.
+
+Happy reading :) Cheers, [Joehannes](maito:johannes.neugschwentner@gmail.com)
+
+![smile](assets/image/joehannes.png)
+
+# Requirements
+
 ## An AngularJS/LocalStorage/Bootstrap Demo
 
 Create a Single Page Application to edit user data based on local storage (no backend).
