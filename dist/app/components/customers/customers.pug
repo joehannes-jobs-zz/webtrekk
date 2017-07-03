@@ -1,0 +1,17 @@
+table.table.table-striped.table-hover#overview-table
+	thead
+		tr
+			th
+				span.glyphicon(aria-hidden="true" ng-class="{ASC:'glyphicon-sort-by-alphabet', DESC:'glyphicon-sort-by-alphabet-alt', DEFAULT:'glyphicon-sort'}[tableHeaders.first_name.sorting]")
+				span {{tableHeaders.first_name.name}}
+			th
+				span.glyphicon(aria-hidden="true" ng-class="{ASC:'glyphicon-sort-by-alphabet', DESC:'glyphicon-sort-by-alphabet-alt', DEFAULT:'glyphicon-sort'}[tableHeaders.last_name.sorting]")
+				span {{tableHeaders.last_name.name}}
+			th {{tableHeaders.age.name}}
+			th {{tableHeaders.gender.name}}
+	tbody
+		tr(ng-repeat="dataset in model | orderBy:orderByName" ng-class="{danger: dataset.active}" data-index="{{dataset.id}}")
+			td {{dataset.first_name}}
+			td {{dataset.last_name}}
+			td {{dataset.age}}
+			td {{dataset.gender}}

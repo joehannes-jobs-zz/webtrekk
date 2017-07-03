@@ -1,0 +1,11 @@
+header.page-header.row
+	.col-md-3 &nbsp;
+	.col-md-6: h1#navigation-header Navigation Data for {{customer}}
+	.col-md-3 &nbsp;
+.row
+	.col-md-3 &nbsp;
+	article.panel.panel-primary.col-md-6
+		navi-data(model="{{model}}").panel-body
+		.panel-footer
+			label.btn.btn-default(ng-click="$goToOverview()") Back To Overview
+	.col-md-3 &nbsp;
