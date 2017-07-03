@@ -54,7 +54,7 @@ your favorite markdown-viewer or on github.
 
 Happy reading :) Cheers, [Joehannes](maito:johannes.neugschwentner@gmail.com)
 
-![smile](assets/image/joehannes.png)
+![smile](assets/images/joehannes.png)
 
 PS:
 
