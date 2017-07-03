@@ -56,6 +56,12 @@ Happy reading :) Cheers, [Joehannes](maito:johannes.neugschwentner@gmail.com)
 
 ![smile](assets/image/joehannes.png)
 
+PS:
+
+* npm start <- webpack dev server
+* npm test <- run the tests
+* npm run build <- deploy to dist dir ... I had to manually adjust index.html
+
 # Requirements
 
 ## An AngularJS/LocalStorage/Bootstrap Demo
