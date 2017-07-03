@@ -56,7 +56,7 @@ table.table.table-striped.table-hover#overview-table
 ## Customers Table
 
 The customers table is an _bootstrap_ table and receives it's data
-via input binding. It has some action buttons, that actually are _angular-ui-bootstrap_ components
+via input binding. It has some action buttons, that actually are (_bootstrap-ified_) components
 and it does some sorting. There's really no big issue :)
 
 ```js
@@ -143,7 +143,13 @@ export class CustomersCtrl extends EventedController {
 		});
 		this._digest();
 	}
+```
 
+This is a method-decorator of my ng-harmony-lib.
+It's working together with the sizzle-selector engine and bean-eventing-lib
+internally to provide for this `In-Controller-Eveneting`
+
+```js
 	@Evented({
 		selector: "thead>tr>th:first-child",
 		type: "click",
@@ -347,7 +353,13 @@ export class CustomersFormCtrl extends EventedController {
 			});
 		}
 	}
+```
 
+Remember the neat switch statement in the Pages-Chapter??
+I use the validators attached to the model and bound to the $scope here ... in this method.
+Using the right combinations of Ecmascript this looks like functional programming - fun times!
+
+```js
 	@Evented({
 		selector: "label#save",
 		type: "mouseup",

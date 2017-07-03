@@ -63,6 +63,12 @@ const routes = {
 			}],
 		},
 	},
+```
+
+Since I'm reusing the DetailsPageCtrl for this non-prefilled state ...
+I need to let it wait for the CustomerService explicitely :)
+
+```js
 	"/add": {
 		controller: "DetailsPageCtrl",
 		template: DetailsPageTpl,
@@ -73,6 +79,12 @@ const routes = {
 			observedModel: () => true
 		},
 	},
+```
+
+Since we don't want the page to display an empty tpl, we add
+the customerSearch as a resolve dep
+
+```js
 	"/detail/:id": {
 		controller: "DetailsPageCtrl",
 		template: DetailsPageTpl,
@@ -83,12 +95,17 @@ const routes = {
 			}],
 		},
 	},
+```
+
+Same thing here ...
+
+```js
 	"/navigation/:id": {
 		controller: "NavigationPageCtrl",
 		template: NavigationPageTpl,
 		resolve: {
 			observedModel: ["$route", "CustomerService", async ($route, CustomerService) => {
-				CustomerService.initialized.promise;
+				await CustomerService.initialized.promise;
 				return CustomerService.naviDataSearch($route.current.params.id);
 			}],
 		},

@@ -26,7 +26,6 @@ import * as NavigationPayload from "../../../assets/data/navigation.payload.json
 
 import Config from "../../../assets/data/config.global.json";
 
-//import "rxjs";
 import * as RxDB from "rxdb";
 import * as Adapter from "pouchdb-adapter-idb";
 
@@ -49,11 +48,15 @@ export class CustomerService extends Srvc {
 	async _create () {
 		RxDB.plugin(Adapter);
 		this.db = await RxDB.create({
-			name: "webtrekk",             // <- name
-			adapter: "idb",           // <- storage-adapter
-			multiInstance: false,         // <- multiInstance (default: true)
+			name: "webtrekk",
+			adapter: "idb", // <- storage-adapter
+			multiInstance: false, // <- multiInstance (default: true)
 		});
+```
 
+These mechanisms create/fetch collections/tables in/from the localStorage :)
+
+```js
 		await this.db.collection({
 			name: "customer",
 			schema: CustomerSchema,
@@ -67,6 +70,13 @@ export class CustomerService extends Srvc {
 			name: "navigation",
 			schema: NavigationSchema,
 		});
+```
+
+Since I can't upsert on tables/collections without primary key in the schema,
+and RxDB doesn't support compound-primaries as of the used version 4.0.2,
+I need to build my way around multiplying the initial payload :)
+
+```js
 		let oldDocs = await this.fetchNaviData();
 		NavigationPayload.data.forEach((n) => {
 			let dupe = oldDocs.some((o) => {
@@ -85,6 +95,13 @@ export class CustomerService extends Srvc {
 			.find()
 			.exec();
 	}
+```
+
+Experience showed I need to destroy the queryCache sometimes, in order not
+to have old queryResults in my return value...
+This is kinda a bug of RxDB methinks ...
+
+```js
 	customerSearch (id) {
 		this.db.customer._queryCache.destroy();
 		return this.db.customer
@@ -114,6 +131,12 @@ export class CustomerService extends Srvc {
 			.eq(id.toString())
 			.exec();
 	}
+```
+
+I'm not actually using these, but one could implement Listeners who respond
+to these Observables automatically ...
+
+```js
 	subscribeCustomer (observer) {
 		this.db.customer.$.subscribe(observer);
 	}
