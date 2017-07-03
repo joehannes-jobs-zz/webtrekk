@@ -7,4 +7,3 @@ bower_components
 .tmp
 npm-debug.log
 build
-dist

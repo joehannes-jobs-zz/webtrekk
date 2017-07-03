@@ -1,0 +1,13 @@
+table.table.table-striped.table-hover#navi-data--table
+	thead
+		tr
+			th
+				span.glyphicon(aria-hidden="true" ng-class="{ASC:'glyphicon-sort-by-alphabet', DESC:'glyphicon-sort-by-alphabet-alt', DEFAULT:'glyphicon-sort'}[tableHeaders.page.sorting]")
+				span {{tableHeaders.page.name}}
+			th
+				span.glyphicon(aria-hidden="true" ng-class="{ASC:'glyphicon-sort-by-order', DESC:'glyphicon-sort-by-order-alt', DEFAULT:'glyphicon-sort'}[tableHeaders.timestamp.sorting]")
+				span {{tableHeaders.timestamp.name}}
+	tbody
+		tr(ng-repeat="dataset in model | orderBy:orderByActiveHeader")
+			td {{dataset.pages}}
+			td {{dataset.timestamp}}

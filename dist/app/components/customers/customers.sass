@@ -1,0 +1,16 @@
+table#overview-table
+	&> thead > tr > th
+		&:nth-child(1):hover, &:nth-child(2):hover
+			cursor: pointer
+			background-color: rgba(50, 50, 200, .1)
+		&:first-child
+			padding-left: 15px
+		&:last-child
+			padding-right: 15px
+	&> tbody > tr
+		cursor: pointer
+		td
+			&:first-child
+				padding-left: 15px
+			&:last-child
+				padding-right: 15px

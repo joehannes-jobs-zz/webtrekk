@@ -6,7 +6,6 @@
     "serve": "node_modules/.bin/rimraf build && gulp compile && gulp serve",
     "build": "node_modules/.bin/rimraf build && node_modules/.bin/rimraf dist && gulp compile && gulp webpack",
     "test": "gulp compile && karma start",
-    "test-watch": "gulp compile && gulp watchLiterature && karma start --auto-watch --no-single-run",
     "start": "npm run serve",
     "coverage": "node_modules/.bin/http-server -p 8081 ./coverage"
   },

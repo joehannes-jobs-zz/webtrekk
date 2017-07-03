@@ -5,8 +5,10 @@ html(lang="en", data-framework="angularjs")
 		meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
 		meta(name="viewport", content="width = device-width, minimal-ui, initial-scale = 1, user-scalable = no")
 		title Webtrekk Demo Joehannes
+		link(rel="shortcut icon" href="/favicon.ico" type="image/x-icon")
+		link(rel="icon" href="/favicon.ico" type="image/x-icon")
 		style [ng-cloak] { display: none; }
 		base(href="/")
 	body(ng-cloak, ng-app="webtrekk")
 		main(ng-view).container-fluid
-		script(src=`${htmlWebpackPlugin.files.chunks.main.entry}`)
+		script(src="`${htmlWebpackPlugin.files.chunks.main.entry}`")
