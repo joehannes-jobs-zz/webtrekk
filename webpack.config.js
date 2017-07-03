@@ -14,8 +14,31 @@ const extractSass = new ExtractTextPlugin({
     filename: "[name].[contenthash].css"
 });
 
+let jsloaders = [{
+	loader: "babel-loader",
+	options: {
+		presets: [
+			"env", "stage-0", "flow", "es2017" //dupe hack to make my plugin work
+		],
+		plugins: [
+			"transform-runtime",
+			"transform-decorators-legacy"
+		]
+	}
+}];
+if (!isTest) {
+	jsloaders.push({
+		loader: "eslint-loader",
+		options: {
+			formatter: require("eslint/lib/formatters/stylish"),
+			failOnWarning: false,
+			failOnError: true
+		}
+	});
+}
+
 let config = {
-    entry: isTest ? void 0 : ["babel-polyfill", "./build/app/app.js"],
+    entry: isTest ? void 0 : ["./build/app/app.js"],
     output: {
         filename: isProd
             ? "[name].[hash].js"
@@ -40,26 +63,7 @@ let config = {
             {
                 test: /\.js$/,
                 exclude: /node_modules\/(?!ng-harmony.*\/).*/,
-                use: [{
-                    loader: "babel-loader",
-                    options: {
-                        presets: [
-                            "env", "es2017", "stage-0", "flow"
-                        ],
-                        plugins: [
-                            "transform-async-functions",
-                            "transform-decorators-legacy",
-                            "transform-class-properties"
-                        ]
-                    }
-                }, {
-					loader: "eslint-loader",
-					options: {
-						formatter: require("eslint/lib/formatters/stylish"),
-						failOnWarning: false,
-						failOnError: true
-					}
-				}]
+                use: jsloaders
             }, {
                 test: /\.html$/,
                 use: [
@@ -138,7 +142,7 @@ let config = {
 if (isTest) {
     config.module.rules.push({
         enforce: "pre",
-        test: /\.js$/,
+        test: /\.spec\.js$/,
         exclude: [
             /node_modules/, /\.spec\.js$/
         ],

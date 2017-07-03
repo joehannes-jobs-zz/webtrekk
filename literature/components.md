@@ -18,6 +18,15 @@
 * [app/components/customer_form/customer_form.sass](#Customer-Form-Styles "save:")
 * [app/components/navi_data/navi_data.sass](#Navigation-Data-Styles "save:")
 
+# Tests ...
+
+### I want to unit test the controllers as well, so let's squeeze the little stubs as good as it gets
+
+* [app/components/customers/customers.spec.js](#Customers-Table-Unit-Tests "save:")
+* [app/components/navi_data/navi_data.spec.js](#Navigation-Data-Unit-Tests "save:")
+
+The little form ctrl really has not a single function that can be unit tested properly ...
+
 ## Customers Table Template
 
 I like to start with the visual structure, so I get a better understanding of
@@ -180,7 +189,7 @@ export class CustomersCtrl extends EventedController {
 
 ```sass
 table#overview-table
-	&> tr > th
+	&> thead > tr > th
 		&:nth-child(1):hover, &:nth-child(2):hover
 			cursor: pointer
 			background-color: rgba(50, 50, 200, .1)
@@ -195,6 +204,64 @@ table#overview-table
 				padding-left: 15px
 			&:last-child
 				padding-right: 15px
+```
+
+## Customers Table Unit Tests
+
+```js
+import Module from "../../app";
+import { CustomersCtrl } from "./customers";
+
+import CustomerPayload from "../../../../assets/data/customer.payload.json";
+
+describe("CustomersComponent", () => {
+    describe("CustomersCtrl", () => {
+        var ctrl, $scope, $element;
+
+        beforeEach(() => {
+            angular.mock.module(Module);
+
+            inject(($controller, $rootScope, $location) => {
+                $scope = $rootScope.$new();
+				$element = angular.element('<div></div>');
+
+                ctrl = $controller("CustomersCtrl", {
+					$scope,
+					$location,
+					$element
+				});
+            });
+        });
+
+        it("should have it's proper name", () => {
+            expect(ctrl.constructor.name).toBe("CustomersCtrl");
+        });
+
+		it("should have default sorting by last_name ASC", () => {
+            expect(ctrl.$scope.tableHeaders.last_name.sorting).toBe("ASC");
+        });
+
+		it("should increase sort order by one step to last:DESC", () => {
+			ctrl.sortByLastName();
+			expect(ctrl.$scope.tableHeaders.last_name.sorting).toBe("DESC");
+        });
+
+		it("should also be reflected in the templates ordering binding prop", () => {
+			ctrl.sortByLastName();
+			expect(ctrl.$scope.tableHeaders.last_name.ordering).toBe('-last_name');
+		});
+
+		it("should also increase sort order by for firstName to first:ASC", () => {
+			ctrl.sortByFirstName();
+			expect(ctrl.$scope.tableHeaders.first_name.sorting).toBe("ASC");
+        });
+
+		it("should also reset lastName sorting to DEFAULT on sorting byElse", () => {
+			ctrl.sortByFirstName();
+			expect(ctrl.$scope.tableHeaders.last_name.sorting).toBe("DEFAULT");
+        });
+    });
+});
 ```
 
 ## Customer Form Template
@@ -457,6 +524,67 @@ export class NaviDataCtrl extends EventedController {
 		this.$scope.tableHeaders[attr].ordering = orderBy[attr][order];
 	}
 }
+```
+
+## Navigation Data Unit Tests
+
+Let's go ahead and ensure our sorting works in the NavData also :)
+
+
+```js
+import Module from "../../app";
+import { NavigationCtrl } from "./navi_data";
+
+import NavigationPayload from "../../../../assets/data/customer.payload.json";
+
+describe("NavigationComponent", () => {
+    describe("NaviDataCtrl", () => {
+        var ctrl, $scope, $element;
+
+        beforeEach(() => {
+            angular.mock.module(Module);
+
+            inject(($controller, $rootScope, $location) => {
+                $scope = $rootScope.$new();
+				$element = angular.element('<div></div>');
+
+                ctrl = $controller("NaviDataCtrl", {
+					$scope,
+					$location,
+					$element
+				});
+            });
+        });
+
+        it("should have it's proper name", () => {
+            expect(ctrl.constructor.name).toBe("NaviDataCtrl");
+        });
+
+		it("should have default sorting by timestamp ASC", () => {
+            expect(ctrl.$scope.tableHeaders.timestamp.sorting).toBe("ASC");
+        });
+
+		it("should increase sort order by one step to ts:DESC", () => {
+			ctrl.sortByTimestamp();
+			expect(ctrl.$scope.tableHeaders.timestamp.sorting).toBe("DESC");
+        });
+
+		it("should also be reflected in the templates ordering binding prop", () => {
+			ctrl.sortByTimestamp();
+			expect(ctrl.$scope.tableHeaders.timestamp.ordering).toBe('-timestamp');
+		});
+
+		it("should also increase sort order by for page to page:ASC", () => {
+			ctrl.sortByPage();
+			expect(ctrl.$scope.tableHeaders.page.sorting).toBe("ASC");
+        });
+
+		it("should also reset ts sorting to DEFAULT on sorting byElse", () => {
+			ctrl.sortByPage();
+			expect(ctrl.$scope.tableHeaders.timestamp.sorting).toBe("DEFAULT");
+        });
+    });
+});
 ```
 
 ## Navigation Data Styles
