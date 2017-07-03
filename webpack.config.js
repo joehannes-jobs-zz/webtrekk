@@ -3,7 +3,8 @@ var path = require("path");
 var webpack = require("webpack");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+var ngAnnotatePlugin = require("ng-annotate-webpack-plugin");
 
 var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === "test" || ENV === "test-watch";
@@ -177,6 +178,9 @@ if (isProd) {
 	config.plugins = [];
     config.plugins.push(
 		new webpack.NoEmitOnErrorsPlugin(),
+        new ngAnnotatePlugin({
+            add: true
+        }),
 		new webpack.optimize.UglifyJsPlugin(),
 		new CopyWebpackPlugin([{
             from: __dirname + "/build"
