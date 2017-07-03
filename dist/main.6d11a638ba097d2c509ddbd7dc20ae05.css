@@ -238,8 +238,8 @@ th {
 
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url("/assets/fonts/bootstrap/glyphicons-halflings-regular.eot");
-  src: url("/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("/assets/fonts/bootstrap/glyphicons-halflings-regular.woff2") format("woff2"), url("/assets/fonts/bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("/assets/fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg"); }
+  src: url(/fonts/glyphicons-halflings-regular.eot);
+  src: url(/fonts/glyphicons-halflings-regular.eot?#iefix) format("embedded-opentype"), url(/fonts/glyphicons-halflings-regular.woff2) format("woff2"), url(/fonts/glyphicons-halflings-regular.woff) format("woff"), url(/fonts/glyphicons-halflings-regular.ttf) format("truetype"), url(/70ef52eba2e8cab6b3e6f93ceb42e458.svg#glyphicons_halflingsregular) format("svg"); }
 
 .glyphicon {
   position: relative;
@@ -5873,4 +5873,4 @@ table#navi-data--table > tbody > tr td:first-child {
 table#navi-data--table > tbody > tr td:last-child {
   padding-right: 15px; }
 
-/*# sourceMappingURL=main.552ca9f58d549b408c5dc4062f49d96c.css.map*/
+/*# sourceMappingURL=main.6d11a638ba097d2c509ddbd7dc20ae05.css.map*/
