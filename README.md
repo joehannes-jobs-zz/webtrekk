@@ -12,7 +12,7 @@ The only drawback from writing markdown with many files combined into story-chap
 is the lack of proper eslint-integration, at least as of now in my editor of choice (Atom)
 and to my best knowledge.
 Should you get it working somehow properly, let me know ...
-I filed an issue on github :)
+I filed an issue on [github](https://github.com/eslint/eslint-plugin-markdown/issues/74) :)
 
 One more thing to be aware of is, that I used my own angular-js lib with this project.
 I wrote it and think it's a decent piece of helper software.
