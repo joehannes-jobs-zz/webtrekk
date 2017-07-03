@@ -12,7 +12,8 @@ var isProd = ENV === "build";
 var isDev = ENV === "serve";
 
 const extractSass = new ExtractTextPlugin({
-    filename: "styles/[name].[contenthash].css"
+    filename: "styles/[name].[contenthash].css",
+	publicPath: "/assets/styles/"
 });
 
 let jsloaders = [{
